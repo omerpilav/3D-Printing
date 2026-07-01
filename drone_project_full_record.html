@@ -1,0 +1,2947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drone Pod Project — Complete Technical Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f4f6fb; --bg2:#ffffff; --bg3:#eef1f8; --border:#dde2ef;
+    --teal:#0097a7; --teal-lt:#e0f7fa;
+    --gold:#f59e0b; --gold-lt:#fffbeb;
+    --green:#16a34a; --green-lt:#dcfce7;
+    --red:#dc2626; --red-lt:#fee2e2;
+    --blue:#1d4ed8; --blue-lt:#dbeafe;
+    --purple:#7c3aed; --purple-lt:#ede9fe;
+    --text:#111827; --text2:#374151; --dim:#6b7280;
+    --code-bg:#0f172a; --code-text:#e2e8f0; --code-comment:#64748b;
+    --font:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);
+       font-size:15px;line-height:1.75}
+
+  .hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#0f172a 100%);
+        color:#fff;padding:60px 40px 48px;position:relative;overflow:hidden}
+  .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;
+               background:linear-gradient(90deg,#0097a7,#7c3aed,#f59e0b)}
+  .hero-eye{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+            color:#67e8f9;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .hero-eye::before{content:'';width:28px;height:2px;background:#67e8f9;border-radius:2px}
+  .hero h1{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.03em;
+           line-height:1.08;margin-bottom:16px}
+  .hero h1 em{color:#67e8f9;font-style:normal}
+  .hero-sub{font-size:15.5px;color:#94a3b8;max-width:680px;margin-bottom:28px;line-height:1.8}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+        border-radius:20px;padding:5px 14px;font-size:11.5px;font-family:var(--mono);color:#e2e8f0}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+  .section{padding:52px 0 0}
+  .sec-eye{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--teal);margin-bottom:6px}
+  .sec-title{font-size:1.7rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+  .sec-sub{font-size:14.5px;color:var(--dim);margin-bottom:24px;max-width:760px}
+
+  h3{font-size:1.05rem;font-weight:700;color:var(--text);margin:22px 0 10px}
+  h4{font-size:0.95rem;font-weight:700;color:var(--teal);margin:18px 0 8px}
+  p{margin-bottom:14px;color:var(--text2);max-width:760px}
+  p.tight{margin-bottom:8px}
+  ul,ol{margin:0 0 14px 0;padding-left:22px;color:var(--text2);max-width:760px}
+  li{margin-bottom:6px}
+  strong{color:var(--text);font-weight:700}
+  code.inline{font-family:var(--mono);font-size:13px;font-weight:600;
+       background:rgba(0,0,0,.06);padding:2px 6px;border-radius:5px;color:var(--teal)}
+
+  .card{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;
+        padding:22px 24px;margin:16px 0}
+  .card.gold{border-left:4px solid var(--gold)}
+  .card.teal{border-left:4px solid var(--teal)}
+  .card.green{border-left:4px solid var(--green)}
+  .card.red{border-left:4px solid var(--red)}
+  .card.blue{border-left:4px solid var(--blue)}
+  .card.purple{border-left:4px solid var(--purple)}
+  .card h4{margin-top:0}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+              gap:14px;margin:20px 0}
+  .stat{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;
+        padding:18px 16px;position:relative;overflow:hidden}
+  .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .stat.t::before{background:var(--teal)} .stat.g::before{background:var(--green)}
+  .stat.o::before{background:var(--gold)} .stat.b::before{background:var(--blue)}
+  .stat.p::before{background:var(--purple)}
+  .stat-label{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+              color:var(--dim);margin-bottom:8px}
+  .stat-val{font-size:1.9rem;font-weight:800;color:var(--text);font-family:var(--mono);
+            letter-spacing:-.03em;line-height:1;margin-bottom:5px}
+  .stat-desc{font-size:12px;color:var(--dim)}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;background:var(--bg2);
+        border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+  th{background:var(--bg3);padding:11px 16px;text-align:left;font-size:11px;font-weight:700;
+     letter-spacing:.08em;text-transform:uppercase;color:var(--dim);
+     border-bottom:1.5px solid var(--border)}
+  td{padding:10px 16px;font-size:13.5px;border-bottom:1px solid var(--border);color:var(--text2)}
+  tr:last-child td{border-bottom:none}
+  td code.inline, th code.inline{font-size:12px}
+
+  .timeline{position:relative;padding-left:30px;margin:20px 0}
+  .timeline::before{content:'';position:absolute;left:9px;top:8px;bottom:8px;width:2px;
+                    background:var(--border)}
+  .tl-item{position:relative;margin-bottom:22px}
+  .tl-dot{position:absolute;left:-25px;top:4px;width:13px;height:13px;border-radius:50%;
+          background:var(--bg2);border:2.5px solid var(--teal)}
+  .tl-dot.gold{border-color:var(--gold)}
+  .tl-dot.green{border-color:var(--green);background:var(--green)}
+  .tl-dot.red{border-color:var(--red)}
+  .tl-session{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+              color:var(--dim);margin-bottom:3px}
+  .tl-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .tl-body{font-size:13px;color:var(--dim);line-height:1.7}
+
+  .code-block{margin:18px 0}
+  .code-label{background:var(--code-bg);color:var(--teal);font-family:var(--mono);
+              font-size:12px;font-weight:700;padding:10px 18px;border-radius:10px 10px 0 0;
+              border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;
+              align-items:center}
+  .code-label .filename{color:#67e8f9}
+  .code-label .filemeta{color:var(--code-comment);font-weight:500}
+  pre.code{background:var(--code-bg);color:var(--code-text);font-family:var(--mono);
+           font-size:12px;line-height:1.65;padding:18px;border-radius:0 0 10px 10px;
+           overflow-x:auto;max-height:620px;overflow-y:auto;margin:0}
+  pre.code::-webkit-scrollbar{width:8px;height:8px}
+  pre.code::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
+
+  .highlight{border-radius:12px;padding:16px 20px;margin:14px 0;display:flex;gap:13px;
+            align-items:flex-start;max-width:760px}
+  .highlight.teal{background:var(--teal-lt);border:1.5px solid #b2ebf2}
+  .highlight.gold{background:var(--gold-lt);border:1.5px solid #fde68a}
+  .highlight.green{background:var(--green-lt);border:1.5px solid #bbf7d0}
+  .highlight.red{background:var(--red-lt);border:1.5px solid #fecaca}
+  .hl-icon{font-size:19px;line-height:1;flex-shrink:0;margin-top:1px}
+  .hl-title{font-weight:700;font-size:13.5px;color:var(--text);margin-bottom:3px}
+  .hl-body{font-size:13px;color:var(--text2);line-height:1.6}
+
+  .toc{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;
+       padding:26px 30px;margin:24px 0}
+  .toc h3{margin-top:0}
+  .toc ol{counter-reset:toc;list-style:none;padding-left:0}
+  .toc ol li{counter-increment:toc;margin-bottom:9px;font-size:14px}
+  .toc ol li::before{content:counter(toc) ". ";font-weight:700;color:var(--teal);
+                     font-family:var(--mono)}
+  .toc a{color:var(--text2);text-decoration:none}
+  .toc a:hover{color:var(--teal)}
+
+  .photo-desc{background:var(--bg3);border:1.5px dashed var(--border);border-radius:10px;
+              padding:14px 18px;margin:14px 0;font-size:13px;color:var(--dim);max-width:760px}
+
+  footer{margin-top:64px;background:var(--bg2);border-top:1.5px solid var(--border);
+        padding:24px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;
+        gap:8px;font-size:12px;color:var(--dim);font-family:var(--mono)}
+
+  .pin-list{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin:14px 0;max-width:760px}
+  .pin-row{display:flex;justify-content:space-between;padding:7px 0;
+           border-bottom:1px solid var(--border);font-size:13px}
+  .pin-row .comp{color:var(--text);font-weight:600}
+  .pin-row .gp{font-family:var(--mono);color:var(--blue);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-eye">Technical Record — Summer 2026 Drone Project</div>
+    <h1>Autonomous Drone-Mounted<br><em>BLE Sensor Data Collection System</em></h1>
+    <p class="hero-sub">A complete record of the design, hardware, software, debugging process, and outcomes of building a Raspberry Pi Pico W drone pod that finds, wakes, and collects data from distributed IoT sensor sticks in the field — written in plain language for use as a research paper reference.</p>
+    <div class="chips">
+      <span class="chip">Raspberry Pi Pico W</span>
+      <span class="chip">MicroPython</span>
+      <span class="chip">Bluetooth Low Energy</span>
+      <span class="chip">GPS / GNSS Navigation</span>
+      <span class="chip">433MHz RF Wake-Up</span>
+      <span class="chip">ST7796 + ST7735 Displays</span>
+      <span class="chip">SD Card Logging</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ol>
+<li><a href="#overview">Project Overview — What This System Does and Why</a></li>
+<li><a href="#hardware">Hardware Used</a></li>
+<li><a href="#pins">Pin Assignments</a></li>
+<li><a href="#ble-basics">How Bluetooth Low Energy Data Collection Works</a></li>
+<li><a href="#ble-discoveries">Key Debugging Discoveries in BLE</a></li>
+<li><a href="#gps-section">Adding GPS — The Two-Flight System</a></li>
+<li><a href="#rf-section">RF Wake-Up System — Problem and Approaches</a></li>
+<li><a href="#display-section">The Two Displays — Big LCD and Small TFT</a></li>
+<li><a href="#timeline">Full Development Timeline</a></li>
+<li><a href="#workflow">The Complete Field Workflow</a></li>
+<li><a href="#code-appendix">Code Appendix — Every Script in Full</a></li>
+</ol>
+</div>
+
+<div class="section" id="overview">
+<div class="sec-eye">1. Project Overview</div>
+<div class="sec-title">What This System Does and Why</div>
+<p>This project solves a simple but tedious problem. A research group has environmental sensor sticks (built by a colleague, Franklin Slaby) scattered across a field. Each stick is a small ESP32-based device that records temperature, humidity, soil moisture, and other readings over time. Until now, the only way to get that data was to physically walk out to each stick, connect a laptop or phone over Bluetooth, and manually download the readings.</p>
+<p>This project replaces that manual process with a drone. A small computer (a Raspberry Pi Pico W) is mounted on the drone. As the drone flies near a sensor stick, the Pico W automatically detects it, connects to it wirelessly using Bluetooth Low Energy, downloads all of its stored sensor readings, and saves them to an SD card — all without anyone touching the stick.</p>
+<p>The project grew in three stages, each adding a new capability:</p>
+
+<div class="stats-grid">
+  <div class="stat t">
+    <div class="stat-label">Stage 1</div>
+    <div class="stat-val">BLE</div>
+    <div class="stat-desc">Connect to one sensor stick and pull its data over Bluetooth</div>
+  </div>
+  <div class="stat o">
+    <div class="stat-label">Stage 2</div>
+    <div class="stat-val">RF</div>
+    <div class="stat-desc">Wake the sensor stick remotely without anyone pressing a button</div>
+  </div>
+  <div class="stat g">
+    <div class="stat-label">Stage 3</div>
+    <div class="stat-val">GPS</div>
+    <div class="stat-desc">Map exactly where each stick is, so the drone can return automatically</div>
+  </div>
+</div>
+
+<p>At the time of writing, Stages 1 and 3 are fully working and tested with real hardware and real sensor data. Stage 2 (the RF wake-up) is partially working — the receiver hardware is confirmed working, but the transmitter side has not yet successfully sent a signal the receiver recognises. This is explained in detail in Section 7.</p>
+
+<div class="section" id="hardware">
+<div class="sec-eye">2. Hardware Used</div>
+<div class="sec-title">The Physical Components</div>
+<p>Two separate pieces of hardware are involved: the drone pod (built and controlled by this project) and the sensor sticks (built separately by Franklin, which this project connects to).</p>
+
+<h3>The Drone Pod</h3>
+<p>The drone pod is built around a <strong>Raspberry Pi Pico W</strong>, a small low-cost microcontroller with built-in Bluetooth and WiFi. It is mounted on a <strong>GeeekPi TFT Controller Board</strong>, which is a carrier board that adds a large 480 by 320 pixel colour screen (the ST7796 display), a buzzer, an RGB LED, and two physical buttons, all built into the same board as the Pico W socket.</p>
+
+<p>To this base board, the following parts were added over the course of the project:</p>
+<ul>
+<li><strong>Micro SD card module</strong> — stores all collected data as CSV (spreadsheet-style) files</li>
+<li><strong>DS3231 real-time clock module</strong> — a small chip with its own coin-cell battery that keeps accurate time even when the Pico W is switched off, used to timestamp every reading</li>
+<li><strong>Adafruit Ultimate GPS Breakout (PA1616S chip)</strong> — receives satellite signals to determine the drone's exact latitude and longitude</li>
+<li><strong>ST7735 1.8 inch colour TFT display</strong> — a much smaller second screen (128 by 160 pixels) intended for the final compact circuit board version of the pod, since the large ST7796 screen takes up too much space for a permanent installation</li>
+<li><strong>TWS-BS-3 433MHz RF transmitter module</strong> — intended to wirelessly wake up sleeping sensor sticks (see Section 7 for the current status of this part)</li>
+</ul>
+
+<h3>The Sensor Sticks (built by Franklin Slaby)</h3>
+<p>Each sensor stick is a separate, independent device planted in the ground at a fixed location in the field. It contains an ESP32 microcontroller, a temperature and humidity sensor, a light sensor, a battery monitor, a soil moisture sensor, a soil temperature probe, its own real-time clock, its own SD card for backup logging, and a small solar panel with two rechargeable batteries so it can run unattended for long periods. Two test sticks were used throughout development, nicknamed <strong>Plat_09</strong> and <strong>Quark Plus</strong>.</p>
+
+<p>Each stick currently has a physical push-button. Pressing this button wakes the ESP32 from deep sleep and makes it broadcast over Bluetooth for two minutes, during which time a nearby device can connect and request its data.</p>
+</div>
+
+<div class="section" id="pins">
+<div class="sec-eye">3. Pin Assignments</div>
+<div class="sec-title">How Everything Is Wired to the Pico W</div>
+<p>A microcontroller like the Pico W has a limited number of connection points, called GPIO pins (General Purpose Input/Output). Each external part needs to be wired to specific pins, and care has to be taken that two different parts never try to use the same pin at the same time. The table below records the final, confirmed-working pin layout used throughout this project.</p>
+
+<h3>Pins used internally by the carrier board (cannot be reused for anything else)</h3>
+<div class="pin-list">
+  <div class="pin-row"><span class="comp">LCD screen (SPI bus)</span><span class="gp">GP2 – GP7</span></div>
+  <div class="pin-row"><span class="comp">Touch sensor (I2C bus)</span><span class="gp">GP8 – GP9</span></div>
+  <div class="pin-row"><span class="comp">RGB LED</span><span class="gp">GP12</span></div>
+  <div class="pin-row"><span class="comp">Buzzer</span><span class="gp">GP13</span></div>
+  <div class="pin-row"><span class="comp">Push buttons</span><span class="gp">GP14 – GP15</span></div>
+  <div class="pin-row"><span class="comp">Onboard indicator LEDs</span><span class="gp">GP16 – GP17</span></div>
+</div>
+
+<h3>Pins used for parts added during this project</h3>
+<div class="pin-list">
+  <div class="pin-row"><span class="comp">SD card — clock line</span><span class="gp">GP26</span></div>
+  <div class="pin-row"><span class="comp">SD card — data out</span><span class="gp">GP27</span></div>
+  <div class="pin-row"><span class="comp">SD card — data in</span><span class="gp">GP28</span></div>
+  <div class="pin-row"><span class="comp">SD card — chip select</span><span class="gp">GP22</span></div>
+  <div class="pin-row"><span class="comp">Real-time clock — data</span><span class="gp">GP10</span></div>
+  <div class="pin-row"><span class="comp">Real-time clock — clock</span><span class="gp">GP11</span></div>
+  <div class="pin-row"><span class="comp">GPS — receives from satellite module</span><span class="gp">GP1</span></div>
+  <div class="pin-row"><span class="comp">GPS — sends to satellite module</span><span class="gp">GP0</span></div>
+  <div class="pin-row"><span class="comp">RF transmitter — data pulse</span><span class="gp">GP20</span></div>
+  <div class="pin-row"><span class="comp">Small TFT — clock line</span><span class="gp">GP2 (shared)</span></div>
+  <div class="pin-row"><span class="comp">Small TFT — data line</span><span class="gp">GP3 (shared)</span></div>
+  <div class="pin-row"><span class="comp">Small TFT — chip select</span><span class="gp">GP18</span></div>
+  <div class="pin-row"><span class="comp">Small TFT — data/command select</span><span class="gp">GP16*</span></div>
+  <div class="pin-row"><span class="comp">Small TFT — reset</span><span class="gp">GP17*</span></div>
+</div>
+<p class="tight" style="font-size:12.5px;color:var(--dim)">* Note: GP16 and GP17 are shared with the onboard LEDs on the carrier board. This works because the carrier board's LEDs are not used while the small TFT is connected, but it is something to be aware of when designing the final dedicated circuit board for this project, where these pins should ideally be separated.</p>
+
+<div class="highlight red">
+  <div class="hl-icon">⚠️</div>
+  <div>
+    <div class="hl-title">A critical early discovery: the buzzer and LED pins must be reset first</div>
+    <div class="hl-body">During the very first stage of this project, the screen would flash once and then go permanently blank every time the code ran. After significant troubleshooting, the cause was found to be that GP12 and GP13 (the RGB LED and buzzer) were left in an active "PWM" (a type of signal used to control brightness or sound) state from a previous run. This state interfered with the screen's communication bus. The fix, now included at the very top of every single script in this project, is to explicitly turn off and reset these two pins before doing anything else.</div>
+  </div>
+</div>
+</div>
+
+<div class="section" id="ble-basics">
+<div class="sec-eye">4. How Bluetooth Low Energy Data Collection Works</div>
+<div class="sec-title">Explained in Plain Terms</div>
+<p>Bluetooth Low Energy, usually shortened to BLE, is the same wireless technology used by wireless earbuds, fitness trackers, and smart watches. It is designed to use very little battery power, which is why Franklin's sensor sticks — which need to run for months on a small solar-charged battery — use it instead of WiFi.</p>
+
+<p>To understand how the data collection works, it helps to know four basic BLE concepts, explained here without technical jargon:</p>
+
+<h3>Advertising</h3>
+<p>When a BLE device wants to be found, it repeatedly broadcasts a short radio message announcing "I am here, and here is what kind of device I am." This is called advertising. A nearby device can listen for these messages without connecting to anything — this is called scanning.</p>
+
+<h3>Service and Characteristics</h3>
+<p>Once connected, a BLE device organises its data into something like a filing cabinet. The cabinet itself is called a Service, and it has a unique long code (like a serial number) that identifies what kind of cabinet it is. Inside the cabinet are individual drawers, called Characteristics, each also with its own unique code. One drawer might be for reading data out, and another drawer might be for writing commands in.</p>
+
+<h3>Notifications and Indications</h3>
+<p>Normally, if you want data from a BLE device, you have to ask for it one small piece at a time. Notifications and indications are a shortcut — once turned on, the device will automatically push data to you as it becomes available, without you having to keep asking. An indication is almost identical to a notification, except the receiving device sends back a small confirmation each time, making it slightly more reliable.</p>
+
+<h3>Handles</h3>
+<p>Behind the scenes, every drawer (characteristic) is also given a simple number, called a handle, which is faster for the microcontroller to use than the long unique code.</p>
+
+<h3>How this project's data collection sequence works, step by step</h3>
+<ol>
+<li>The Pico W scans the airwaves, listening for the unique code that identifies Franklin's sensor sticks</li>
+<li>When found, the Pico W sends a connection request to that specific stick</li>
+<li>Once connected, the Pico W asks the stick to list all of its drawers (characteristics) so it can find the right ones</li>
+<li>The Pico W turns on notifications and indications on the data drawer, so the stick will start pushing data automatically</li>
+<li>The Pico W writes the word <code class="inline">HelloWorld</code> into the command drawer — this is the specific signal Franklin's firmware listens for to mean "please send me all your stored data"</li>
+<li>The stick responds by sending all of its stored sensor readings, one line at a time, finishing with the text <code class="inline">End of File</code> repeated three times to signal it is done</li>
+<li>The Pico W saves every line it receives onto the SD card, along with the current timestamp from the real-time clock</li>
+</ol>
+</div>
+
+<div class="section" id="ble-discoveries">
+<div class="sec-eye">5. Key Debugging Discoveries in BLE</div>
+<div class="sec-title">What Went Wrong and How It Was Fixed</div>
+<p>Getting the BLE connection working reliably took several rounds of trial and error. Each discovery below represents a specific bug that caused the connection to fail or behave unpredictably, along with the fix that resolved it. These are recorded in detail because they are the kind of subtle, hard-to-find issues that are valuable to document for anyone repeating or extending this work.</p>
+
+<div class="highlight teal">
+  <div class="hl-icon">🔍</div>
+  <div>
+    <div class="hl-title">Discovery 1 — The sensor stick does not broadcast its name</div>
+    <div class="hl-body">Most BLE tutorials assume you can scan for a device by its name (for example, scanning for a device called "Plat_09"). Franklin's sensor sticks do not include their name in the advertising broadcast at all. The fix was to scan for the unique Service code instead, by searching for a specific sequence of bytes (<code class="inline">701b9b55</code>) inside the raw advertisement data that every BLE broadcast carries.</div>
+  </div>
+</div>
+
+<div class="highlight red">
+  <div class="hl-icon">⚠️</div>
+  <div>
+    <div class="hl-title">Discovery 2 — Turning on notifications alone is not enough</div>
+    <div class="hl-body">The standard way to enable data push from a BLE device is to write a specific 2-byte code (<code class="inline">0x01 0x00</code>) into a special hidden drawer called the CCCD. This enables notifications. With Franklin's sensor sticks, doing only this caused the stick to disconnect immediately after receiving the HelloWorld command, before sending any data. After extensive testing, the fix was found: writing <code class="inline">0x03 0x00</code> instead, which turns on both notifications AND indications together. It turned out the sensor stick's firmware was built to use indications, not plain notifications, so leaving indications off caused it to give up and disconnect.</div>
+  </div>
+</div>
+
+<div class="highlight gold">
+  <div class="hl-icon">🔢</div>
+  <div>
+    <div class="hl-title">Discovery 3 — Wrong internal event numbers caused random crashes</div>
+    <div class="hl-body">MicroPython's Bluetooth software tells your code what is happening (a device was found, a connection succeeded, data arrived, etc) using a system of numbered "events." Early in development, two completely different events — peripheral connected, and characteristic discovery finished — were accidentally both being treated as the same event number, which caused unpredictable crashes and disconnections. The fix was to carefully verify and use the correct number for each event: 5 for scan result, 7 for peripheral connect, 8 for peripheral disconnect, 11 for characteristic found, 12 for characteristic discovery done, 18 for notify, and 19 for indicate.</div>
+  </div>
+</div>
+
+<div class="highlight teal">
+  <div class="hl-icon">🧩</div>
+  <div>
+    <div class="hl-title">Discovery 4 — The event-handling code needed to be a simple function, not part of a class</div>
+    <div class="hl-body">An early version of this project organised the BLE code as a class (a more structured way of writing code, common in larger programs). This caused mysterious, intermittent disconnections that were very difficult to trace. Switching to a single plain function with shared global variables (a simpler, more old-fashioned style of code) completely resolved the issue. This is believed to be a quirk specific to how MicroPython's BLE software handles its internal callbacks.</div>
+  </div>
+</div>
+
+<div class="highlight green">
+  <div class="hl-icon">✅</div>
+  <div>
+    <div class="hl-title">Discovery 5 — Timing matters</div>
+    <div class="hl-body">After connecting, the code needed to wait about 1.5 seconds before asking the stick to list its characteristics, and the discovery process itself was given up to 10 seconds to finish. Trying to move too fast caused the ESP32 on the stick's side to fail to respond in time.</div>
+  </div>
+</div>
+
+<h3>The confirmed working connection details for the test stick "Plat_09"</h3>
+<table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>Bluetooth address (MAC)</td><td><code class="inline">F4:65:0B:55:47:5A</code></td></tr>
+<tr><td>Service identifier</td><td><code class="inline">701b9b55-dffe-4e37-a2c2-f03fe7e8f82e</code></td></tr>
+<tr><td>Data-out drawer (notify)</td><td><code class="inline">bd60d2fc-0304-4af2-b531-f5bfa429eb91</code> (handle 42)</td></tr>
+<tr><td>Command-in drawer (write)</td><td><code class="inline">bd60d2fc-0304-4af2-b531-f5bfa429eb92</code> (handle 45)</td></tr>
+<tr><td>Hidden notification toggle (CCCD)</td><td>handle 43, value <code class="inline">0x0003</code></td></tr>
+</table>
+
+<h3>Test results from real connection attempts</h3>
+<table>
+<tr><th>Attempt</th><th>Stick</th><th>Rows Collected</th><th>Result</th><th>Notes</th></tr>
+<tr><td>1</td><td>Plat_09</td><td>50</td><td>Success</td><td>First successful collection, after applying the CCCD fix</td></tr>
+<tr><td>2</td><td>Quark Plus</td><td>0</td><td>Failed</td><td>A phone was still connected to the stick in the background — BLE only allows one connection at a time</td></tr>
+<tr><td>3</td><td>Plat_09</td><td>50</td><td>Success</td><td>Confirmed repeatable and stable</td></tr>
+<tr><td>4</td><td>Plat_09</td><td>128</td><td>Success</td><td>Largest dataset collected to date, including readings spanning January through June 2026</td></tr>
+</table>
+</div>
+
+<div class="section" id="gps-section">
+<div class="sec-eye">6. Adding GPS — The Two-Flight System</div>
+<div class="sec-title">Why Two Separate Flights Are Needed</div>
+<p>Midway through the project, a new requirement came from the project supervisor. Initially, the drone simply flew over a field hoping to stumble across a sensor stick's Bluetooth signal. This works, but it relies on luck and careful flying. The supervisor's instruction was to split the work into two clearly separated flights:</p>
+
+<div class="card gold">
+<h4>Flight 1 — The Mapping Flight</h4>
+<p class="tight">The drone flies once over the entire field. As it flies, the Pico W constantly does two things at the same time: it reads its own GPS position, and it listens (without connecting) for the Bluetooth signal strength of any nearby sensor stick. When the signal from a stick becomes strong enough — meaning the drone is currently flying directly above or very near that stick — the Pico W records the GPS coordinates at that exact moment, tagged with that stick's unique Bluetooth address. By the end of this flight, a file called <code class="inline">waypoints.csv</code> exists on the SD card containing the precise location of every sensor stick in the field.</p>
+</div>
+
+<div class="card teal">
+<h4>Flight 2 — The Data Collection Flight</h4>
+<p class="tight">On all later visits, the drone uses the saved waypoint coordinates to fly directly and deliberately to each known sensor stick location, one at a time. At each location, it performs the full Bluetooth connection sequence described in Section 4 and saves the collected sensor data to a separate file, <code class="inline">drone_data.csv</code>.</p>
+</div>
+
+<p>This two-flight approach means that after the first mapping flight, the team never has to search for the sticks again — every future visit is a direct, efficient trip straight to each known location.</p>
+
+<h3>How the GPS hardware works</h3>
+<p>The GPS module used (an Adafruit Ultimate GPS Breakout with a PA1616S chip) receives signals from GPS satellites orbiting the Earth and calculates its own position, typically accurate to within about 3 metres. It then continuously sends this position information to the Pico W as plain text, using a format called NMEA, over a simple two-wire serial connection. The Pico W reads this text and extracts the latitude and longitude from it.</p>
+
+<div class="highlight red">
+  <div class="hl-icon">📡</div>
+  <div>
+    <div class="hl-title">GPS requires open sky</div>
+    <div class="hl-body">GPS signals come from satellites and cannot pass through walls or roofs. During testing, the GPS module showed no data at all when used indoors, and only began producing valid coordinates once taken outside with a clear view of the sky. The very first satellite "fix" after power-on can take up to 60 seconds; after that, updates arrive about once per second.</div>
+  </div>
+</div>
+
+<h3>Translating GPS data into something usable</h3>
+<p>The raw text the GPS module sends looks like this:</p>
+<pre class="code" style="max-height:none">$GPRMC,162650.000,A,4653.6788,N,09648.1123,W,0.54,313.42,250626,,,A*7E</pre>
+<p>This is broken down by the code into its meaningful parts: the time, whether the position is valid (<code class="inline">A</code> for active, <code class="inline">V</code> for void/no fix), the latitude and longitude in a format of degrees and minutes, and the date. The code converts the degrees-and-minutes format into ordinary decimal degrees, which is the format used by mapping software such as Google Maps. For example, a reading from this project converted to <strong>46.8946° North, 96.8019° West</strong>, which correctly places the test location in Fargo, North Dakota.</p>
+
+<h3>How the waypoint mapper combines GPS and Bluetooth</h3>
+<p>Logging a waypoint correctly requires both pieces of information to be available and recent at the same time: a valid GPS position, and a Bluetooth signal that is currently strong. The mapping script checks the strength of the Bluetooth signal (measured in a unit called RSSI, where a number closer to zero, such as -45, means a stronger and closer signal, and a more negative number, such as -80, means a weaker and farther signal). A threshold of <strong>-60 dBm</strong> was chosen as the cutoff — any signal stronger than that is treated as "close enough" to log a waypoint. This number was set as a starting point and is expected to be fine-tuned once real flight altitude is tested, since signal strength naturally weakens with both distance and height.</p>
+
+<h3>Confirmed working waypoint result from a real test</h3>
+<table>
+<tr><th>Field</th><th>Recorded Value</th></tr>
+<tr><td>Sensor stick MAC address</td><td><code class="inline">5A:47:55:0B:65:F4</code> (Plat_09)</td></tr>
+<tr><td>Latitude</td><td>46.89441</td></tr>
+<tr><td>Longitude</td><td>-96.8018</td></tr>
+<tr><td>Signal strength (RSSI)</td><td>-46 (very strong — drone was very close)</td></tr>
+</table>
+</div>
+
+<div class="section" id="rf-section">
+<div class="sec-eye">7. RF Wake-Up System — Problem and Approaches</div>
+<div class="sec-title">Removing the Need for a Manual Button Press</div>
+<p>As described earlier, each sensor stick currently requires someone to walk up and physically press a button to wake it before its Bluetooth becomes available. This defeats much of the purpose of using a drone, since a person would still need to visit every stick in person beforehand. The goal of this part of the project is to let the drone itself wake each stick remotely, using a separate, longer-range radio signal at 433MHz — a different and much simpler radio band than Bluetooth, commonly used for things like garage door openers and wireless doorbells.</p>
+
+<h3>The receiver hardware (confirmed working)</h3>
+<p>A small receiver module, the <strong>PT2272-M4</strong>, was identified and tested. This chip is the receiving half of a very common, decades-old remote-control system. It listens for a specific 433MHz radio code and, when it hears the correct one, sets one of its four output pins to a high voltage (electrically "on") for as long as the matching transmitter button is held down.</p>
+<p>This receiver was tested directly using a small 4-button key fob transmitter that was available in the lab. Pressing buttons A, B, and C on the fob produced no response, but pressing <strong>Button D</strong> reliably and repeatedly lit an LED connected to the receiver's "D0" output pin. This important finding confirmed two things: first, that the receiver hardware itself works correctly and is properly powered, and second, that this specific receiver and this specific key fob are already factory-paired to recognise Button D's code.</p>
+
+<h3>The transmitter problem (not yet solved)</h3>
+<p>The original plan was to mount a small 433MHz transmitter module on the drone itself (the Pico W), so that the drone could send the wake-up signal automatically without any person pressing a physical button. Several transmitter options were investigated:</p>
+<table>
+<tr><th>Component Considered</th><th>Outcome</th></tr>
+<tr><td>FS1000A transmitter module</td><td>Not available in the lab; would have needed to be ordered</td></tr>
+<tr><td>LM1871N</td><td>Rejected — operates at 27 or 49MHz, the wrong frequency entirely</td></tr>
+<tr><td>N8223B</td><td>Rejected — not a radio transmitter component at all</td></tr>
+<tr><td>INS8250N</td><td>Rejected — this is an old computer serial-port chip, unrelated to radio</td></tr>
+<tr><td>COM2601</td><td>Rejected — also a serial communications chip, not radio</td></tr>
+<tr><td>MC2831AP</td><td>Rejected — an FM radio broadcast transmitter, wrong frequency band entirely</td></tr>
+<tr><td>TWS-BS-3 (Wenshing)</td><td>Correct frequency (433.92MHz) and ordered via Digikey, but raw timed pulses sent from the Pico W did not produce any response from the receiver</td></tr>
+</table>
+
+<p>The TWS-BS-3 is electrically correct for the job — it transmits at exactly the right frequency. However, simply turning its data pin on and off from the Pico W is not enough, because the PT2272-M4 receiver does not just listen for "any signal," it listens for a precisely timed pattern of pulses that spells out a specific address and button code, using a much older encoding scheme called PT2262. Several attempts were made to recreate this exact pulse pattern directly in MicroPython, trying multiple timing values and address combinations, but none of them successfully triggered the receiver. The most likely explanation is that MicroPython, running on general-purpose hardware without a dedicated timing chip, cannot reliably produce pulses with the microsecond-level precision that this old encoding scheme requires.</p>
+
+<h3>Two remaining paths forward</h3>
+<div class="card teal">
+<h4>Option A — Drive the existing key fob electronically</h4>
+<p class="tight">Since Button D on the physical key fob is already proven to work, a small transistor (an electronic switch) could be wired across the Button D contacts on the fob's circuit board. The Pico W could then "press" the button electronically by briefly turning the transistor on, with no soldering required if done using temporary clip leads for testing. This approach sidesteps the encoding problem entirely, since it uses the fob's own, already-correct internal circuitry to generate the signal rather than trying to recreate it in software.</p>
+</div>
+<div class="card gold">
+<h4>Option B — A mechanical servo motor presses the button</h4>
+<p class="tight">A small servo motor, mounted next to the key fob, could physically push down on Button D when commanded by the Pico W. This requires no modification to the fob at all and no soldering, though it is a slightly more mechanical and less elegant solution.</p>
+</div>
+<p>At the time of writing, neither option has yet been fully built and tested; this remains the single largest open item in the project.</p>
+</div>
+
+<div class="section" id="display-section">
+<div class="sec-eye">8. The Two Displays</div>
+<div class="sec-title">A Large Screen for Testing, A Small Screen for the Final Design</div>
+<p>Two different screens are used in this project, for two different purposes.</p>
+
+<h3>The large 480 by 320 pixel screen (ST7796)</h3>
+<p>This is the screen built into the GeeekPi carrier board used throughout development. It shows a full, detailed status display: which step the system is currently on (scanning, connecting, receiving data, saving, and so on), the address of the sensor stick currently being worked with, a live scrolling list of every line of data as it arrives, a progress bar, the drone's current GPS position, and a final summary screen at the end of each flight. Because of its large size, this screen is excellent for development and demonstration but is too bulky to be part of a small, permanently mounted drone payload.</p>
+
+<h3>The small 1.8 inch, 128 by 160 pixel screen (ST7735)</h3>
+<p>This much smaller screen is intended for the final, compact version of the circuit that will actually be mounted on the drone long-term. It mirrors a condensed version of the same information — current status, the stick's address, row count, and GPS position — in a much smaller physical space. Getting this screen to display text in the correct, readable orientation (rather than upside down, mirrored, or rotated 90 degrees) required a significant amount of trial and error, since different manufacturing batches of this very common display chip (the ST7735) are known to have slightly different internal default orientations. The final, working configuration writes its own small graphics-drawing routines from scratch directly in MicroPython, rather than relying on an existing third-party display library, ensuring full control over text placement and colour.</p>
+
+<div class="photo-desc">In testing photographs taken during this stage, the small display can be seen correctly showing live status text such as "SCANNING," the partial Bluetooth address of a sensor stick, and a row counter, confirming the screen, its wiring, and its software driver are all functioning correctly.</div>
+</div>
+
+<div class="section" id="timeline">
+<div class="sec-eye">9. Full Development Timeline</div>
+<div class="sec-title">How the Project Progressed, Session by Session</div>
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-dot gold"></div>
+    <div class="tl-session">Stage 1 — Hardware Foundations</div>
+    <div class="tl-title">Getting the screen and SD card working together</div>
+    <div class="tl-body">Discovered the buzzer and LED pin conflict that was blanking the screen, and resolved a pin-sharing conflict between the screen and the SD card by moving the SD card to a different, unused set of pins.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 2 — First Bluetooth Connection</div>
+    <div class="tl-title">Finding the sensor stick over Bluetooth</div>
+    <div class="tl-body">Realised the sensor stick does not broadcast its name, and switched to scanning for its unique service code instead, which immediately succeeded in finding it.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 3 — Stabilising the Connection</div>
+    <div class="tl-title">Fixing crashes during connection and characteristic discovery</div>
+    <div class="tl-body">Corrected internal event numbering mistakes that were causing intermittent crashes, and restructured the connection-handling code into a simpler form to eliminate mysterious disconnections.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot green"></div>
+    <div class="tl-session">Stage 4 — First Successful Data Download</div>
+    <div class="tl-title">50 rows of real sensor data collected for the first time</div>
+    <div class="tl-body">Discovered the critical fix of enabling both notifications and indications together (rather than notifications alone), which had been silently causing the stick to disconnect before sending any data. This was the single most important breakthrough of the project.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 5 — Polishing the User Interface</div>
+    <div class="tl-title">Building a clear, professional on-screen display</div>
+    <div class="tl-body">Designed a full status interface on the large screen showing live progress, scrolling data, and a results summary, and extended the system to handle multiple sensor sticks one after another in a single session.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 6 — The RF Wake-Up Attempt</div>
+    <div class="tl-title">Investigating how to wake sticks remotely</div>
+    <div class="tl-body">Identified and tested the PT2272-M4 receiver and confirmed it works correctly using a physical key fob. Several transmitter components from the lab were ruled out as electrically incompatible, and a correctly specified 433MHz transmitter was ordered. Software-based signal encoding from the Pico W was attempted but did not yet succeed, identifying timing precision as the likely obstacle.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot green"></div>
+    <div class="tl-session">Stage 7 — Adding GPS and the Two-Flight Workflow</div>
+    <div class="tl-title">Mapping sensor stick locations automatically</div>
+    <div class="tl-body">Following new direction from the project supervisor, GPS hardware was added and successfully tested outdoors, producing accurate real-world coordinates. A waypoint-logging system combining GPS position with Bluetooth signal strength was built and confirmed working, successfully logging a real sensor stick's exact field location.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 8 — A Single Unified Program</div>
+    <div class="tl-title">Combining mapping and data collection into one automatic system</div>
+    <div class="tl-body">Rather than requiring two separate programs to be manually swapped between flights, a single program was written that automatically detects, based on whether a waypoints file already exists on the SD card, whether it should run a mapping flight or a data collection flight — requiring no manual configuration in the field.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-dot"></div>
+    <div class="tl-session">Stage 9 — Adding the Compact Display</div>
+    <div class="tl-title">Bringing up the small screen intended for the final hardware</div>
+    <div class="tl-body">After working through several display orientation issues specific to this screen model, a fully custom, from-scratch graphics driver was written and integrated, mirroring key status information from the main screen onto the smaller display intended for the eventual compact drone payload.</div>
+  </div>
+</div>
+</div>
+
+<div class="section" id="workflow">
+<div class="sec-eye">10. The Complete Field Workflow</div>
+<div class="sec-title">How This System Is Actually Used, Start to Finish</div>
+
+<h3>One-time setup, before the first flight ever</h3>
+<ol>
+<li>Run the real-time clock setup script once, to set the correct current date and time. This only needs to be done once, since the clock has its own battery and keeps time even when powered off.</li>
+</ol>
+
+<h3>Flight 1 — the mapping flight (done once per field, or whenever a new stick is added)</h3>
+<ol>
+<li>Insert a formatted SD card into the drone pod</li>
+<li>Power on the drone pod outdoors and confirm the GPS shows a valid fix</li>
+<li>Launch and fly the drone slowly over the area where the sensor sticks are located</li>
+<li>As the drone passes near each stick, the system automatically detects the strong Bluetooth signal and logs that stick's exact GPS position to the SD card</li>
+<li>After the flight, land, remove the SD card, and check the resulting waypoints file on a laptop</li>
+</ol>
+
+<h3>Flight 2 onward — the data collection flights (repeated as often as needed)</h3>
+<ol>
+<li>Insert the SD card containing the previously saved waypoints file</li>
+<li>Power on the drone pod — the system automatically recognises that waypoints already exist and switches into data collection mode</li>
+<li>Fly the drone to each known waypoint location in turn</li>
+<li>At each location, the system wakes the sensor stick (currently requiring a manual button press until the RF wake-up system is finished), connects over Bluetooth, downloads all stored sensor data, and saves it to the SD card with a timestamp</li>
+<li>After visiting all sticks, land and remove the SD card to retrieve the full dataset</li>
+</ol>
+
+<div class="highlight green">
+  <div class="hl-icon">📋</div>
+  <div>
+    <div class="hl-title">What is fully working today</div>
+    <div class="hl-body">The complete Bluetooth connection and data download process, the SD card saving system, the real-time clock timestamping, the GPS reading and coordinate conversion, the waypoint mapping logic, the large status display, and the small secondary display are all built, tested, and confirmed working with real hardware.</div>
+  </div>
+</div>
+<div class="highlight gold">
+  <div class="hl-icon">🚧</div>
+  <div>
+    <div class="hl-title">What remains to be finished</div>
+    <div class="hl-body">The fully automatic, remote RF wake-up of sleeping sensor sticks is the one piece of the system not yet completed. Until it is finished, a person must still manually press the wake-up button on each sensor stick shortly before the drone arrives — though no longer needs to stay and operate a laptop at each stick, since the entire data download itself is now fully automatic.</div>
+  </div>
+</div>
+</div>
+
+<div class="section" id="code-appendix">
+<div class="sec-eye">11. Code Appendix</div>
+<div class="sec-title">Every Script Used in This Project, in Full</div>
+<p>The following six programs represent the complete, final working software produced during this project. Each is written in MicroPython, the version of the Python programming language adapted to run directly on small microcontrollers such as the Raspberry Pi Pico W. They are included here in full for technical reference and reproducibility.</p>
+
+<h3>11.1 — Bluetooth Data Collection (single sensor stick, full UI)</h3>
+<p>This was the core script developed first, proving that a single sensor stick could be reliably found, connected to, and its data downloaded and saved to SD card, with a complete status display shown on the large screen throughout the process.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">test_connect_plat09.py</span><span class="filemeta">492 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+DRONE POD — BLE SENSOR DATA COLLECTOR
+Professional UI — 480x320 ST7796 Display
+Now includes RF wake-up via TWS-BS-3 on GP20
+&quot;&quot;&quot;
+from machine import Pin, PWM
+try:
+    for p in [12, 13]:
+        try:
+            x = PWM(Pin(p)); x.duty_u16(0); x.deinit()
+        except: pass
+    Pin(12, Pin.OUT).off()
+    Pin(13, Pin.OUT).off()
+except: pass
+
+import bluetooth, time, machine, os
+import LCD
+
+# ── SD card pins ──────────────────────────────────────────────
+SD_SPI  = 1;  SD_SCK  = 26;  SD_MOSI = 27
+SD_MISO = 28; SD_CS   = 22
+
+# ── RTC ───────────────────────────────────────────────────────
+RTC_SDA = 10; RTC_SCL = 11; DS3231 = 0x68
+
+# ── RF wake-up pin (TWS-BS-3 DATA pin) ───────────────────────
+RF_PIN = Pin(20, Pin.OUT)
+RF_PIN.off()
+
+# ── BLE ───────────────────────────────────────────────────────
+SERVICE_HEX_BE = &quot;701b9b55&quot;
+SERVICE_HEX_LE = &quot;559b1b70&quot;
+NOTIFY_UUID    = &quot;bd60d2fc03044af2b531f5bfa429eb91&quot;
+WRITE_UUID     = &quot;bd60d2fc03044af2b531f5bfa429eb92&quot;
+END_MARKER     = &quot;End of File&quot;
+LOG_FILE       = &quot;/sd/drone_data.csv&quot;
+
+_IRQ_SCAN_RESULT                 = 5
+_IRQ_PERIPHERAL_CONNECT          = 7
+_IRQ_PERIPHERAL_DISCONNECT       = 8
+_IRQ_GATTC_CHARACTERISTIC_RESULT = 11
+_IRQ_GATTC_CHARACTERISTIC_DONE   = 12
+_IRQ_GATTC_NOTIFY                = 18
+_IRQ_GATTC_INDICATE              = 19
+
+found_ab   = None; found_type = None; found_mac = None
+connected  = False; conn_h = None
+chars_done = False; nfy_h = None; wrt_h = None
+data_lines = []; eof_count = 0
+
+
+# ════════════════════════════════════════════════════════════
+#  RF WAKE-UP
+# ════════════════════════════════════════════════════════════
+
+def rf_wake():
+    &quot;&quot;&quot;Fire a 500ms RF pulse to wake the sensor stick.&quot;&quot;&quot;
+    print(&quot;[RF] Sending wake-up pulse...&quot;)
+    RF_PIN.on()
+    time.sleep_ms(500)
+    RF_PIN.off()
+    print(&quot;[RF] Pulse sent. Waiting 2s for ESP32 to boot BLE...&quot;)
+    time.sleep_ms(2000)
+
+
+# ════════════════════════════════════════════════════════════
+#  COLOUR PALETTE
+# ════════════════════════════════════════════════════════════
+def C(r,g,b): return LCD.RGB(r,g,b)
+
+BG_DEEP   = lambda: C(4,   8,   20)
+BG_CARD   = lambda: C(10,  18,  42)
+BG_PANEL  = lambda: C(16,  28,  60)
+TEAL      = lambda: C(0,   210, 190)
+GOLD      = lambda: C(255, 200, 0)
+GREEN_OK  = lambda: C(50,  230, 100)
+RED_ERR   = lambda: C(230, 60,  60)
+ORANGE    = lambda: C(255, 140, 0)
+WHITE     = lambda: C(240, 245, 255)
+DIM       = lambda: C(80,  100, 140)
+CYAN_LT   = lambda: C(100, 220, 255)
+
+STATUS_COLORS = {
+    &quot;SCANNING&quot;:    lambda: C(255, 200, 0),
+    &quot;CONNECTING&quot;:  lambda: C(100, 180, 255),
+    &quot;CONNECTED&quot;:   lambda: C(50,  230, 100),
+    &quot;RECEIVING&quot;:   lambda: C(0,   210, 190),
+    &quot;SAVING&quot;:      lambda: C(180, 100, 255),
+    &quot;DONE&quot;:        lambda: C(50,  230, 100),
+    &quot;ERROR&quot;:       lambda: C(230, 60,  60),
+    &quot;RF WAKE&quot;:     lambda: C(255, 140, 0),
+}
+
+def safe(s):
+    return &quot;&quot;.join(c for c in str(s) if 32 &lt;= ord(c) &lt;= 126)
+
+
+# ════════════════════════════════════════════════════════════
+#  DRAWING PRIMITIVES
+# ════════════════════════════════════════════════════════════
+
+def fill(x, y, w, h, col):
+    LCD.Solid_Box(x, y, x+w-1, y+h-1, col)
+
+def hline(x, y, w, col):
+    LCD.Line(x, y, x+w-1, y, col)
+
+def vline(x, y, h, col):
+    LCD.Line(x, y, x, y+h-1, col)
+
+def txt1(s, x, y, fg, bg):
+    LCD.Text(safe(s)[:60], x, y, fg, bg)
+
+def txt2(s, x, y, fg, bg):
+    LCD.Text2(safe(s)[:28], x, y, fg, bg)
+
+def progress_bar(x, y, w, h, pct, fg, bg_bar):
+    fill(x, y, w, h, bg_bar)
+    bar_w = int(w * max(0, min(1, pct)))
+    if bar_w &gt; 0:
+        fill(x, y, bar_w, h, fg)
+    if bar_w &gt; 2:
+        hline(x+1, y+1, bar_w-2, C(255,255,255) if pct &gt; 0 else bg_bar)
+
+
+# ════════════════════════════════════════════════════════════
+#  SCREEN LAYOUTS
+# ════════════════════════════════════════════════════════════
+
+W = 480;  H = 320
+
+def draw_base_screen():
+    LCD.Clear(BG_DEEP())
+    fill(0, 0, W, 48, BG_CARD())
+    hline(0, 48, W, TEAL())
+    txt2(&quot;DRONE POD&quot;, 12, 8, TEAL(), BG_CARD())
+    txt1(&quot;v1.0  BLE SENSOR COLLECTOR&quot;, 200, 16, DIM(), BG_CARD())
+    txt1(&quot;BLE&quot;, 420, 8, DIM(), BG_CARD())
+    txt1(&quot;SD&quot;,  446, 8, DIM(), BG_CARD())
+    fill(0, 50, 200, H-50, BG_CARD())
+    vline(200, 50, H-50, TEAL())
+    txt1(&quot;STATUS&quot;, 12, 58, TEAL(), BG_CARD())
+    hline(12, 72, 80, TEAL())
+    txt1(&quot;SENSOR DATA&quot;, 214, 58, TEAL(), BG_DEEP())
+    hline(214, 72, 120, TEAL())
+    fill(0, H-30, W, 30, BG_CARD())
+    hline(0, H-30, W, TEAL())
+
+def update_header_indicators(sd_ok, ble_active):
+    sd_col  = GREEN_OK() if sd_ok     else RED_ERR()
+    ble_col = GREEN_OK() if ble_active else DIM()
+    fill(418, 4, 18, 14, BG_CARD())
+    fill(444, 4, 16, 14, BG_CARD())
+    txt1(&quot;BLE&quot;, 420, 8, ble_col, BG_CARD())
+    txt1(&quot;SD&quot;,  446, 8, sd_col,  BG_CARD())
+
+def update_status(state, sub=&quot;&quot;):
+    col = STATUS_COLORS.get(state, WHITE)()
+    fill(10, 80, 180, 32, BG_PANEL())
+    fill(10, 80, 4,   32, col)
+    txt1(state, 20, 90, col, BG_PANEL())
+    fill(10, 118, 185, 16, BG_CARD())
+    txt1(safe(sub)[:22], 10, 118, DIM(), BG_CARD())
+
+def update_stick_info(mac, rssi=&quot;&quot;, addr_type=&quot;&quot;):
+    fill(10, 142, 185, 60, BG_CARD())
+    txt1(&quot;STICK FOUND&quot;, 10, 142, GOLD(), BG_CARD())
+    if mac:
+        txt1(mac[:9],  10, 158, WHITE(), BG_CARD())
+        txt1(mac[9:],  10, 172, WHITE(), BG_CARD())
+    if rssi:
+        txt1(&quot;RSSI: {}&quot;.format(rssi), 10, 188, DIM(), BG_CARD())
+
+def update_handles(nfy, wrt):
+    fill(10, 210, 185, 34, BG_CARD())
+    txt1(&quot;NFY hdl: {}&quot;.format(nfy), 10, 210, CYAN_LT(), BG_CARD())
+    txt1(&quot;WRT hdl: {}&quot;.format(wrt), 10, 224, CYAN_LT(), BG_CARD())
+
+def update_progress(rows, eof):
+    fill(10, 252, 185, 50, BG_CARD())
+    txt1(&quot;ROWS: {}&quot;.format(rows),   10, 252, GREEN_OK(), BG_CARD())
+    txt1(&quot;EOF:  {}/3&quot;.format(eof),  10, 268,
+         GREEN_OK() if eof &gt;= 3 else GOLD(), BG_CARD())
+    pct = min(1.0, eof / 3.0)
+    progress_bar(10, 286, 180, 8, pct, TEAL(), BG_PANEL())
+
+def update_footer(msg, col=None):
+    if col is None: col = WHITE()
+    fill(2, H-28, W-4, 26, BG_CARD())
+    txt1(safe(msg)[:70], 8, H-22, col, BG_CARD())
+
+DATA_ROW_H   = 16
+DATA_ROWS    = 14
+DATA_START_Y = 78
+_data_row_idx = 0
+
+def add_data_row(line):
+    global _data_row_idx
+    line = safe(line)[:34]
+    y = DATA_START_Y + (_data_row_idx % DATA_ROWS) * DATA_ROW_H
+    if _data_row_idx &gt;= DATA_ROWS:
+        fill(204, y, 274, DATA_ROW_H, BG_DEEP())
+    bg = BG_PANEL() if (_data_row_idx % 2 == 0) else BG_DEEP()
+    fill(204, y, 274, DATA_ROW_H - 1, bg)
+    txt1(line, 206, y + 1, CYAN_LT(), bg)
+    next_y = DATA_START_Y + ((_data_row_idx + 1) % DATA_ROWS) * DATA_ROW_H
+    hline(204, next_y, 274, TEAL())
+    _data_row_idx += 1
+
+def draw_results_screen(rows_saved, mac, ts, sd_ok):
+    LCD.Clear(BG_DEEP())
+    fill(0, 0, W, 52, BG_CARD())
+    hline(0, 52, W, GREEN_OK())
+    txt2(&quot;COLLECTION DONE&quot;, 40, 10, GREEN_OK(), BG_CARD())
+    fill(20, 70, 200, 90, BG_PANEL())
+    fill(20, 70, 4,   90, TEAL())
+    txt2(&quot;ROWS&quot;, 36, 78, DIM(), BG_PANEL())
+    LCD.Text2(str(rows_saved), 36, 104, TEAL(), BG_PANEL())
+    fill(240, 70, 220, 90, BG_PANEL())
+    fill(240, 70, 4,   90, GOLD())
+    txt1(&quot;SENSOR STICK&quot;, 252, 78, GOLD(), BG_PANEL())
+    txt1(mac[:9],  252, 96,  WHITE(), BG_PANEL())
+    txt1(mac[9:],  252, 112, WHITE(), BG_PANEL())
+    txt1(&quot;type=0  BLE&quot;, 252, 130, DIM(), BG_PANEL())
+    fill(20, 174, 440, 28, BG_PANEL())
+    txt1(&quot;Collected at: {}&quot;.format(ts), 28, 182, CYAN_LT(), BG_PANEL())
+    fill(20, 214, 440, 28, BG_PANEL())
+    if sd_ok:
+        txt1(&quot;Saved to SD card:  drone_data.csv&quot;, 28, 222, GREEN_OK(), BG_PANEL())
+    else:
+        txt1(&quot;SD card not available -- data lost&quot;, 28, 222, RED_ERR(), BG_PANEL())
+    fill(0, H-42, W, 42, BG_CARD())
+    hline(0, H-42, W, TEAL())
+    txt1(&quot;Remove SD card and open  drone_data.csv  on your laptop&quot;,
+         20, H-30, WHITE(), BG_CARD())
+    txt1(&quot;Press RESET to collect again&quot;, 130, H-14, DIM(), BG_CARD())
+
+def draw_error_screen(msg):
+    LCD.Clear(BG_DEEP())
+    fill(0, 0, W, 52, BG_CARD())
+    hline(0, 52, W, RED_ERR())
+    txt2(&quot;ERROR&quot;, 180, 10, RED_ERR(), BG_CARD())
+    fill(20, 80, W-40, 60, BG_PANEL())
+    fill(20, 80, 4, 60, RED_ERR())
+    txt1(safe(msg)[:54], 30, 96, WHITE(), BG_PANEL())
+    fill(0, H-32, W, 32, BG_CARD())
+    txt1(&quot;Press RESET to try again&quot;, 150, H-22, DIM(), BG_CARD())
+
+
+# ════════════════════════════════════════════════════════════
+#  BLE IRQ
+# ════════════════════════════════════════════════════════════
+
+def ble_irq(event, data):
+    global found_ab, found_type, found_mac
+    global connected, conn_h
+    global chars_done, nfy_h, wrt_h
+    global data_lines, eof_count
+
+    if event == _IRQ_SCAN_RESULT:
+        addr_type, addr, adv_type, rssi, adv_data = data
+        raw = bytes(adv_data).hex()
+        if (SERVICE_HEX_BE in raw or SERVICE_HEX_LE in raw) and found_ab is None:
+            found_ab   = bytes(addr)
+            found_type = int(addr_type)
+            found_mac  = &quot;:&quot;.join(&quot;{:02X}&quot;.format(b) for b in reversed(found_ab))
+            print(&quot;Found: {} type={} RSSI={}&quot;.format(found_mac, found_type, rssi))
+            ble.gap_scan(None)
+
+    elif event == _IRQ_PERIPHERAL_CONNECT:
+        conn_h2, _, _ = data
+        conn_h    = conn_h2
+        connected = True
+        print(&quot;Connected handle={}&quot;.format(conn_h))
+
+    elif event == _IRQ_PERIPHERAL_DISCONNECT:
+        connected = False
+        print(&quot;Disconnected&quot;)
+
+    elif event == _IRQ_GATTC_CHARACTERISTIC_RESULT:
+        _, _, vh, _, uuid = data
+        u = str(uuid).lower().replace(&quot;-&quot;,&quot;&quot;)
+        if NOTIFY_UUID in u:
+            nfy_h = vh
+        elif WRITE_UUID in u:
+            wrt_h = vh
+
+    elif event == _IRQ_GATTC_CHARACTERISTIC_DONE:
+        chars_done = True
+        print(&quot;Discovery done notify={} write={}&quot;.format(nfy_h, wrt_h))
+
+    elif event == _IRQ_GATTC_NOTIFY or event == _IRQ_GATTC_INDICATE:
+        _, _, nd = data
+        try:
+            chunk = bytes(nd).decode(&quot;utf-8&quot;, &quot;ignore&quot;)
+            line  = chunk.strip()
+            print(&quot;DATA: {}&quot;.format(line[:60]))
+            data_lines.append(chunk)
+            if line and END_MARKER not in line:
+                add_data_row(line)
+                update_progress(len(data_lines), eof_count)
+            if END_MARKER in chunk:
+                eof_count += 1
+                print(&quot;EOF #{}&quot;.format(eof_count))
+                update_progress(len(data_lines), eof_count)
+        except:
+            pass
+
+
+# ════════════════════════════════════════════════════════════
+#  HELPERS
+# ════════════════════════════════════════════════════════════
+
+def rtc_timestamp():
+    try:
+        i2c = machine.I2C(1, sda=machine.Pin(RTC_SDA),
+                          scl=machine.Pin(RTC_SCL), freq=100_000)
+        d = i2c.readfrom_mem(DS3231, 0x00, 7)
+        def b(x): return (x&gt;&gt;4)*10+(x&amp;0x0F)
+        return &quot;{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}&quot;.format(
+            b(d[6])+2000, b(d[5]&amp;0x1F), b(d[4]),
+            b(d[2]&amp;0x3F), b(d[1]), b(d[0]&amp;0x7F))
+    except:
+        return &quot;t{}&quot;.format(time.ticks_ms())
+
+def mount_sd():
+    try:
+        import sdcard
+        spi = machine.SPI(SD_SPI, baudrate=1_000_000,
+                          sck=machine.Pin(SD_SCK),
+                          mosi=machine.Pin(SD_MOSI),
+                          miso=machine.Pin(SD_MISO))
+        cs = machine.Pin(SD_CS, machine.Pin.OUT)
+        sd = sdcard.SDCard(spi, cs)
+        try: os.umount(&quot;/sd&quot;)
+        except: pass
+        os.mount(os.VfsFat(sd), &quot;/sd&quot;)
+        try: os.stat(LOG_FILE)
+        except:
+            with open(LOG_FILE, &quot;w&quot;) as f:
+                f.write(&quot;collected_at,stick_mac,raw_data\n&quot;)
+        print(&quot;SD mounted OK&quot;)
+        return True
+    except Exception as e:
+        print(&quot;SD failed: {}&quot;.format(e))
+        return False
+
+def sd_save(ts, mac, lines):
+    count = 0
+    try:
+        with open(LOG_FILE, &quot;a&quot;) as f:
+            for line in lines:
+                line = line.strip()
+                if line and END_MARKER not in line:
+                    f.write(&#x27;{},{},&quot;{}&quot;\n&#x27;.format(ts, mac, line))
+                    count += 1
+        print(&quot;Saved {} rows&quot;.format(count))
+    except Exception as e:
+        print(&quot;SD write error: {}&quot;.format(e))
+    return count
+
+
+# ════════════════════════════════════════════════════════════
+#  MAIN
+# ════════════════════════════════════════════════════════════
+
+# Init LCD
+LCD.Init()
+time.sleep_ms(100)
+draw_base_screen()
+update_footer(&quot;Initialising...&quot;)
+
+# Mount SD
+sd_ok = mount_sd()
+update_header_indicators(sd_ok, False)
+update_footer(&quot;SD card {}&quot;.format(&quot;ready&quot; if sd_ok else &quot;FAILED&quot;),
+              GREEN_OK() if sd_ok else RED_ERR())
+time.sleep_ms(500)
+
+# ── STEP 1: RF wake-up — fires BEFORE BLE scan ───────────────
+update_status(&quot;RF WAKE&quot;, &quot;Waking sensor stick...&quot;)
+update_footer(&quot;Sending RF wake-up signal via TWS-BS-3...&quot;, ORANGE())
+rf_wake()
+update_footer(&quot;RF pulse sent. Stick should be awake now.&quot;, GREEN_OK())
+time.sleep_ms(500)
+
+# Init BLE
+ble = bluetooth.BLE()
+ble.active(True)
+ble.irq(ble_irq)
+time.sleep_ms(300)
+update_header_indicators(sd_ok, True)
+
+# ── STEP 2: BLE scan — now that stick is awake ───────────────
+update_status(&quot;SCANNING&quot;, &quot;Searching for stick...&quot;)
+update_footer(&quot;Scanning for sensor stick over BLE...&quot;, GOLD())
+print(&quot;Scanning for stick...&quot;)
+ble.gap_scan(30000, 30000, 30000)
+
+deadline = time.ticks_add(time.ticks_ms(), 30000)
+while found_ab is None:
+    if time.ticks_diff(deadline, time.ticks_ms()) &lt;= 0:
+        print(&quot;Scan timeout&quot;)
+        draw_error_screen(&quot;No sensor stick found. Press RESET and try again.&quot;)
+        ble.active(False)
+        raise SystemExit
+    time.sleep_ms(100)
+
+update_stick_info(found_mac)
+update_status(&quot;CONNECTING&quot;, found_mac[-8:])
+update_footer(&quot;Sensor stick found -- connecting...&quot;)
+
+# Connect
+time.sleep_ms(300)
+ble.gap_connect(found_type, found_ab)
+
+deadline = time.ticks_add(time.ticks_ms(), 8000)
+while not connected:
+    if time.ticks_diff(deadline, time.ticks_ms()) &lt;= 0:
+        draw_error_screen(&quot;Connection timeout. Press RESET and try again.&quot;)
+        ble.active(False)
+        raise SystemExit
+    time.sleep_ms(50)
+
+update_status(&quot;CONNECTED&quot;, &quot;Discovering...&quot;)
+update_footer(&quot;Connected -- discovering characteristics...&quot;)
+
+# Discover
+time.sleep_ms(1500)
+chars_done = False
+ble.gattc_discover_characteristics(conn_h, 1, 0xFFFF)
+deadline = time.ticks_add(time.ticks_ms(), 10000)
+while not chars_done:
+    if time.ticks_diff(deadline, time.ticks_ms()) &lt;= 0:
+        draw_error_screen(&quot;BLE discovery timeout. Press RESET and try again.&quot;)
+        ble.active(False)
+        raise SystemExit
+    time.sleep_ms(50)
+
+update_handles(nfy_h, wrt_h)
+update_footer(&quot;Enabling notifications...&quot;)
+
+# Enable notify + indicate
+ble.gattc_write(conn_h, nfy_h + 1, b&#x27;\x01\x00&#x27;, 1)
+time.sleep_ms(500)
+ble.gattc_write(conn_h, nfy_h + 1, b&#x27;\x03\x00&#x27;, 1)
+time.sleep_ms(1000)
+
+# Send HelloWorld
+update_status(&quot;RECEIVING&quot;, &quot;Data incoming...&quot;)
+update_footer(&quot;Receiving sensor data -- please wait...&quot;)
+ble.gattc_write(conn_h, wrt_h, b&quot;HelloWorld&quot;, 1)
+time.sleep_ms(500)
+
+# Wait for data
+deadline = time.ticks_add(time.ticks_ms(), 90000)
+last_len = 0
+stall    = 0
+while eof_count &lt; 3 and connected:
+    if time.ticks_diff(deadline, time.ticks_ms()) &lt;= 0:
+        print(&quot;Data timeout&quot;)
+        break
+    cur = len(data_lines)
+    if cur == last_len:
+        stall += 1
+        if stall &gt; 300:
+            print(&quot;No new data 15s&quot;)
+            break
+    else:
+        stall    = 0
+        last_len = cur
+    time.sleep_ms(50)
+
+print(&quot;Chunks: {}  EOF: {}&quot;.format(len(data_lines), eof_count))
+
+# Save
+update_status(&quot;SAVING&quot;, &quot;Writing to SD...&quot;)
+update_footer(&quot;Saving to SD card...&quot;)
+ts = rtc_timestamp()
+rows_saved = 0
+if data_lines and sd_ok:
+    rows_saved = sd_save(ts, found_mac, data_lines)
+
+# Disconnect
+try: ble.gap_disconnect(conn_h)
+except: pass
+ble.active(False)
+
+# Results screen
+time.sleep_ms(500)
+draw_results_screen(rows_saved, found_mac, ts, sd_ok)
+print(&quot;Done. {} rows saved. Remove SD card.&quot;.format(rows_saved))
+</pre>
+</div>
+
+<h3>11.2 — Waypoint Mapper (Flight 1 — GPS and Bluetooth signal logging)</h3>
+<p>This script combines continuous GPS reading with continuous Bluetooth signal-strength scanning to automatically record the precise location of every sensor stick during a single mapping flight over the field.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">waypoint_mapper.py</span><span class="filemeta">448 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+WAYPOINT MAPPER — Flight 1
+Drone flies over field. When BLE RSSI from a sensor stick
+is strong enough (drone is directly overhead), GPS coordinates
+are logged to waypoints.csv on the SD card.
+
+Result: waypoints.csv maps each stick MAC to its field location.
+This file is used for all subsequent data collection flights.
+
+GPS:  PA1616S on UART0 — GPS TX → Pico W GP1 (RXD)
+BLE:  Passive scan for service UUID 701b9b55
+SD:   SPI1 GP26/27/28/22
+LCD:  480x320 ST7796
+&quot;&quot;&quot;
+from machine import Pin, PWM
+try:
+    for p in [12, 13]:
+        try:
+            x = PWM(Pin(p)); x.duty_u16(0); x.deinit()
+        except: pass
+    Pin(12, Pin.OUT).off()
+    Pin(13, Pin.OUT).off()
+except: pass
+
+import bluetooth, time, machine, os
+import LCD
+
+# ── GPS UART ──────────────────────────────────────────────────
+GPS_UART_ID = 0
+GPS_TX_PIN  = 0   # Pico W TX → GPS RX (optional)
+GPS_RX_PIN  = 1   # GPS TX  → Pico W RX (required)
+
+# ── SD card ───────────────────────────────────────────────────
+SD_SPI=1; SD_SCK=26; SD_MOSI=27; SD_MISO=28; SD_CS=22
+
+# ── RTC ───────────────────────────────────────────────────────
+RTC_SDA=10; RTC_SCL=11; DS3231=0x68
+
+# ── BLE ───────────────────────────────────────────────────────
+SERVICE_HEX_BE  = &quot;701b9b55&quot;
+SERVICE_HEX_LE  = &quot;559b1b70&quot;
+WAYPOINT_FILE   = &quot;/sd/waypoints.csv&quot;
+
+# RSSI threshold — drone must be this close or closer to log waypoint
+# -60 = within ~10m  |  -50 = very close ~3-5m
+# Tune this after your first test flight
+RSSI_THRESHOLD  = -60
+
+_IRQ_SCAN_RESULT = 5
+
+# ── State ─────────────────────────────────────────────────────
+logged_macs   = set()   # MACs already logged this flight
+latest_rssi   = {}      # mac -&gt; rssi for display
+current_lat   = None
+current_lon   = None
+gps_fix       = False
+waypoint_count = 0
+
+# ── Colours ───────────────────────────────────────────────────
+def C(r,g,b): return LCD.RGB(r,g,b)
+BG_DEEP  = lambda: C(4,   8,   20)
+BG_CARD  = lambda: C(10,  18,  42)
+BG_PANEL = lambda: C(16,  28,  60)
+TEAL     = lambda: C(0,   210, 190)
+GOLD     = lambda: C(255, 200, 0)
+GREEN_OK = lambda: C(50,  230, 100)
+RED_ERR  = lambda: C(230, 60,  60)
+ORANGE   = lambda: C(255, 140, 0)
+WHITE    = lambda: C(240, 245, 255)
+DIM      = lambda: C(80,  100, 140)
+CYAN_LT  = lambda: C(100, 220, 255)
+PURPLE   = lambda: C(180, 100, 255)
+
+W=480; H=320
+
+def safe(s):
+    return &quot;&quot;.join(c for c in str(s) if 32 &lt;= ord(c) &lt;= 126)
+
+def fill(x,y,w,h,col):  LCD.Solid_Box(x,y,x+w-1,y+h-1,col)
+def hline(x,y,w,col):   LCD.Line(x,y,x+w-1,y,col)
+def vline(x,y,h,col):   LCD.Line(x,y,x,y+h-1,col)
+def t1(s,x,y,fg,bg):    LCD.Text(safe(s)[:60],x,y,fg,bg)
+def t2(s,x,y,fg,bg):    LCD.Text2(safe(s)[:28],x,y,fg,bg)
+
+
+# ════════════════════════════════════════════════════════════
+#  LCD LAYOUT
+# ════════════════════════════════════════════════════════════
+
+def draw_base():
+    LCD.Clear(BG_DEEP())
+    # Header
+    fill(0,0,W,48,BG_CARD())
+    hline(0,48,W,TEAL())
+    t2(&quot;DRONE POD&quot;,12,8,TEAL(),BG_CARD())
+    t1(&quot;v1.0  WAYPOINT MAPPER  FLIGHT 1&quot;,200,16,DIM(),BG_CARD())
+    t1(&quot;GPS&quot;,400,8,DIM(),BG_CARD())
+    t1(&quot;BLE&quot;,426,8,DIM(),BG_CARD())
+    t1(&quot;SD&quot;, 452,8,DIM(),BG_CARD())
+
+    # Left panel — GPS + status
+    fill(0,50,220,H-80,BG_CARD())
+    LCD.Line(220,50,220,H-30,TEAL())
+    t1(&quot;GPS STATUS&quot;,12,58,TEAL(),BG_CARD())
+    hline(12,70,90,TEAL())
+
+    # Right panel — waypoints log
+    t1(&quot;WAYPOINTS LOGGED&quot;,232,58,TEAL(),BG_DEEP())
+    hline(232,70,140,TEAL())
+
+    # Footer
+    fill(0,H-30,W,30,BG_CARD())
+    hline(0,H-30,W,TEAL())
+
+def update_indicators(gps_ok, ble_ok, sd_ok):
+    fill(396,4,82,14,BG_CARD())
+    t1(&quot;GPS&quot;,400,8,GREEN_OK() if gps_ok else DIM(),BG_CARD())
+    t1(&quot;BLE&quot;,426,8,GREEN_OK() if ble_ok else DIM(),BG_CARD())
+    t1(&quot;SD&quot;, 452,8,GREEN_OK() if sd_ok  else DIM(),BG_CARD())
+
+def update_gps(lat, lon, fix):
+    fill(10,78,202,80,BG_CARD())
+    if fix and lat is not None:
+        t1(&quot;FIX: OK&quot;,10,78,GREEN_OK(),BG_CARD())
+        t1(&quot;LAT: {:.6f}&quot;.format(lat),10,96,CYAN_LT(),BG_CARD())
+        t1(&quot;LON: {:.6f}&quot;.format(lon),10,112,CYAN_LT(),BG_CARD())
+    else:
+        t1(&quot;FIX: SEARCHING...&quot;,10,78,GOLD(),BG_CARD())
+        t1(&quot;Waiting for satellites&quot;,10,96,DIM(),BG_CARD())
+        t1(&quot;Go outside / open sky&quot;,10,112,DIM(),BG_CARD())
+
+def update_ble_status(mac, rssi):
+    fill(10,165,202,50,BG_CARD())
+    t1(&quot;NEAREST STICK&quot;,10,165,GOLD(),BG_CARD())
+    if mac:
+        t1(mac[:9], 10,181,WHITE(),BG_CARD())
+        t1(mac[9:], 10,195,WHITE(),BG_CARD())
+        rssi_col = GREEN_OK() if rssi &gt;= RSSI_THRESHOLD else ORANGE()
+        t1(&quot;RSSI: {}&quot;.format(rssi),10,209,rssi_col,BG_CARD())
+    else:
+        t1(&quot;No sticks in range&quot;,10,181,DIM(),BG_CARD())
+
+def update_waypoint_count(n):
+    fill(10,222,202,40,BG_CARD())
+    t1(&quot;WAYPOINTS SAVED&quot;,10,222,TEAL(),BG_CARD())
+    t2(str(n),10,238,GREEN_OK(),BG_CARD())
+
+def update_footer(msg,col=None):
+    if col is None: col=WHITE()
+    fill(2,H-28,W-4,26,BG_CARD())
+    t1(safe(msg)[:70],8,H-22,col,BG_CARD())
+
+# Waypoint log panel — right side, scrolling
+WP_ROW_H  = 22
+WP_ROWS   = 10
+WP_START_Y = 78
+_wp_row = 0
+
+def add_waypoint_row(mac, lat, lon):
+    global _wp_row
+    y = WP_START_Y + (_wp_row % WP_ROWS) * WP_ROW_H
+    bg = BG_PANEL() if _wp_row % 2 == 0 else BG_DEEP()
+    fill(224, y, 254, WP_ROW_H-1, bg)
+    # Short MAC last 8 chars + coords
+    t1(mac[-8:],226,y+1,GOLD(),bg)
+    t1(&quot;{:.4f}&quot;.format(lat),226,y+10,CYAN_LT(),bg)
+    _wp_row += 1
+
+
+# ════════════════════════════════════════════════════════════
+#  GPS PARSING
+# ════════════════════════════════════════════════════════════
+
+def nmea_to_decimal(raw, direction):
+    &quot;&quot;&quot;Convert NMEA ddmm.mmmm to decimal degrees.&quot;&quot;&quot;
+    try:
+        raw = raw.strip()
+        if not raw or len(raw) &lt; 4:
+            return None
+        if direction in [&#x27;N&#x27;,&#x27;S&#x27;]:
+            deg = float(raw[:2])
+            mins = float(raw[2:])
+        else:
+            deg = float(raw[:3])
+            mins = float(raw[3:])
+        decimal = deg + mins / 60.0
+        if direction in [&#x27;S&#x27;,&#x27;W&#x27;]:
+            decimal = -decimal
+        return decimal
+    except:
+        return None
+
+def parse_gprmc(sentence):
+    &quot;&quot;&quot;Parse $GPRMC sentence. Returns (lat, lon, valid) or (None,None,False).&quot;&quot;&quot;
+    try:
+        parts = sentence.split(&#x27;,&#x27;)
+        if len(parts) &lt; 7:
+            return None, None, False
+        status = parts[2]   # A=active, V=void
+        if status != &#x27;A&#x27;:
+            return None, None, False
+        lat = nmea_to_decimal(parts[3], parts[4])
+        lon = nmea_to_decimal(parts[5], parts[6])
+        if lat is None or lon is None:
+            return None, None, False
+        return lat, lon, True
+    except:
+        return None, None, False
+
+def parse_gpgga(sentence):
+    &quot;&quot;&quot;Parse $GPGGA sentence. Returns (lat, lon, valid) or (None,None,False).&quot;&quot;&quot;
+    try:
+        parts = sentence.split(&#x27;,&#x27;)
+        if len(parts) &lt; 6:
+            return None, None, False
+        fix_quality = parts[6] if len(parts) &gt; 6 else &#x27;0&#x27;
+        if fix_quality == &#x27;0&#x27;:
+            return None, None, False
+        lat = nmea_to_decimal(parts[2], parts[3])
+        lon = nmea_to_decimal(parts[4], parts[5])
+        if lat is None or lon is None:
+            return None, None, False
+        return lat, lon, True
+    except:
+        return None, None, False
+
+def read_gps(gps_uart):
+    &quot;&quot;&quot;Read one line from GPS UART and parse if it is GPRMC or GPGGA.&quot;&quot;&quot;
+    global current_lat, current_lon, gps_fix
+    if not gps_uart.any():
+        return
+    try:
+        line = gps_uart.readline()
+        if line is None:
+            return
+        line = line.decode(&#x27;utf-8&#x27;,&#x27;ignore&#x27;).strip()
+        if line.startswith(&#x27;$GPRMC&#x27;) or line.startswith(&#x27;$GNRMC&#x27;):
+            lat, lon, valid = parse_gprmc(line)
+            if valid:
+                current_lat = lat
+                current_lon = lon
+                gps_fix = True
+        elif line.startswith(&#x27;$GPGGA&#x27;) or line.startswith(&#x27;$GNGGA&#x27;):
+            lat, lon, valid = parse_gpgga(line)
+            if valid:
+                current_lat = lat
+                current_lon = lon
+                gps_fix = True
+    except:
+        pass
+
+
+# ════════════════════════════════════════════════════════════
+#  BLE SCAN IRQ — passive scan, RSSI only, no connect
+# ════════════════════════════════════════════════════════════
+
+best_mac  = None
+best_rssi = -999
+
+def ble_irq(event, data):
+    global best_mac, best_rssi, latest_rssi
+    if event == _IRQ_SCAN_RESULT:
+        addr_type, addr, adv_type, rssi, adv_data = data
+        raw = bytes(adv_data).hex()
+        if SERVICE_HEX_BE in raw or SERVICE_HEX_LE in raw:
+            mac = &quot;:&quot;.join(&quot;{:02X}&quot;.format(b) for b in reversed(bytes(addr)))
+            latest_rssi[mac] = int(rssi)
+            if int(rssi) &gt; best_rssi:
+                best_rssi = int(rssi)
+                best_mac  = mac
+
+
+# ════════════════════════════════════════════════════════════
+#  SD HELPERS
+# ════════════════════════════════════════════════════════════
+
+def rtc_timestamp():
+    try:
+        i2c = machine.I2C(1,sda=machine.Pin(RTC_SDA),
+                          scl=machine.Pin(RTC_SCL),freq=100_000)
+        d = i2c.readfrom_mem(DS3231,0x00,7)
+        def b(x): return (x&gt;&gt;4)*10+(x&amp;0x0F)
+        return &quot;{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}&quot;.format(
+            b(d[6])+2000,b(d[5]&amp;0x1F),b(d[4]),
+            b(d[2]&amp;0x3F),b(d[1]),b(d[0]&amp;0x7F))
+    except:
+        return &quot;t{}&quot;.format(time.ticks_ms())
+
+def mount_sd():
+    try:
+        import sdcard
+        spi = machine.SPI(SD_SPI,baudrate=1_000_000,
+                          sck=machine.Pin(SD_SCK),
+                          mosi=machine.Pin(SD_MOSI),
+                          miso=machine.Pin(SD_MISO))
+        cs = machine.Pin(SD_CS,machine.Pin.OUT)
+        sd = sdcard.SDCard(spi,cs)
+        try: os.umount(&quot;/sd&quot;)
+        except: pass
+        os.mount(os.VfsFat(sd),&quot;/sd&quot;)
+        # Create waypoints file with header if not exists
+        try:
+            os.stat(WAYPOINT_FILE)
+        except:
+            with open(WAYPOINT_FILE,&quot;w&quot;) as f:
+                f.write(&quot;mac,latitude,longitude,rssi,timestamp\n&quot;)
+        print(&quot;SD mounted OK&quot;)
+        return True
+    except Exception as e:
+        print(&quot;SD failed: {}&quot;.format(e))
+        return False
+
+def save_waypoint(mac, lat, lon, rssi, ts):
+    try:
+        with open(WAYPOINT_FILE,&quot;a&quot;) as f:
+            f.write(&quot;{},{:.6f},{:.6f},{},{}\n&quot;.format(
+                mac, lat, lon, rssi, ts))
+        print(&quot;Waypoint saved: {} at {:.6f},{:.6f} RSSI={}&quot;.format(
+            mac, lat, lon, rssi))
+        return True
+    except Exception as e:
+        print(&quot;Waypoint save error: {}&quot;.format(e))
+        return False
+
+
+# ════════════════════════════════════════════════════════════
+#  MAIN
+# ════════════════════════════════════════════════════════════
+
+# Init LCD
+LCD.Init()
+time.sleep_ms(100)
+draw_base()
+update_footer(&quot;Initialising...&quot;)
+
+# Mount SD
+sd_ok = mount_sd()
+update_indicators(False, False, sd_ok)
+update_footer(&quot;SD {}&quot;.format(&quot;ready&quot; if sd_ok else &quot;FAILED&quot;),
+              GREEN_OK() if sd_ok else RED_ERR())
+if not sd_ok:
+    import sys; sys.exit()
+time.sleep_ms(400)
+
+# Init GPS
+gps_uart = machine.UART(GPS_UART_ID, baudrate=9600,
+                        tx=machine.Pin(GPS_TX_PIN),
+                        rx=machine.Pin(GPS_RX_PIN))
+update_footer(&quot;GPS initialising — go outside for fix...&quot;, GOLD())
+print(&quot;GPS initialised on UART0 GP1&quot;)
+
+# Init BLE passive scan
+ble = bluetooth.BLE()
+ble.active(True)
+ble.irq(ble_irq)
+# Passive scan — window=100ms interval=200ms continuously
+ble.gap_scan(0, 200000, 100000, False)
+update_indicators(False, True, sd_ok)
+update_footer(&quot;Scanning for sensor sticks...&quot;, TEAL())
+print(&quot;BLE passive scan started&quot;)
+
+# ── Main mapping loop ─────────────────────────────────────────
+print(&quot;Mapping flight started. Fly over sensor sticks.&quot;)
+print(&quot;Waypoints will be saved to /sd/waypoints.csv&quot;)
+print(&quot;Press CTRL+C to end flight and see summary.&quot;)
+
+last_display = time.ticks_ms()
+last_gps_display = time.ticks_ms()
+
+try:
+    while True:
+        # Read GPS every loop iteration
+        read_gps(gps_uart)
+
+        now = time.ticks_ms()
+
+        # Update GPS display every 2 seconds
+        if time.ticks_diff(now, last_gps_display) &gt; 2000:
+            update_gps(current_lat, current_lon, gps_fix)
+            update_indicators(gps_fix, True, sd_ok)
+            last_gps_display = now
+
+        # Update BLE display every 1 second
+        if time.ticks_diff(now, last_display) &gt; 1000:
+            if best_mac:
+                update_ble_status(best_mac, best_rssi)
+            last_display = now
+
+            # ── Check if any stick is close enough to log ────
+            for mac, rssi in latest_rssi.items():
+                if mac in logged_macs:
+                    continue
+                if rssi &gt;= RSSI_THRESHOLD and gps_fix:
+                    ts = rtc_timestamp()
+                    ok = save_waypoint(mac, current_lat,
+                                      current_lon, rssi, ts)
+                    if ok:
+                        logged_macs.add(mac)
+                        waypoint_count += 1
+                        add_waypoint_row(mac, current_lat, current_lon)
+                        update_waypoint_count(waypoint_count)
+                        update_footer(
+                            &quot;WAYPOINT SAVED: {} at {:.4f},{:.4f}&quot;.format(
+                                mac[-8:], current_lat, current_lon),
+                            GREEN_OK())
+                        print(&quot;Logged waypoint {}: {}&quot;.format(
+                            waypoint_count, mac))
+
+            # Reset best_rssi each second for fresh readings
+            best_rssi = -999
+            best_mac  = None
+
+        time.sleep_ms(50)
+
+except KeyboardInterrupt:
+    pass
+
+# ── End of flight summary ─────────────────────────────────────
+ble.gap_scan(None)
+ble.active(False)
+
+LCD.Clear(BG_DEEP())
+fill(0,0,W,52,BG_CARD())
+hline(0,52,W,GREEN_OK())
+t2(&quot;FLIGHT 1 COMPLETE&quot;,30,10,GREEN_OK(),BG_CARD())
+
+fill(20,70,W-40,40,BG_PANEL())
+t1(&quot;WAYPOINTS LOGGED: {}&quot;.format(waypoint_count),
+   28,85,WHITE(),BG_PANEL())
+
+fill(20,120,W-40,40,BG_PANEL())
+t1(&quot;File: /sd/waypoints.csv&quot;,28,135,CYAN_LT(),BG_PANEL())
+
+fill(20,170,W-40,80,BG_PANEL())
+t1(&quot;Next steps:&quot;,28,178,GOLD(),BG_PANEL())
+t1(&quot;1. Remove SD card&quot;,28,194,DIM(),BG_PANEL())
+t1(&quot;2. Open waypoints.csv on laptop&quot;,28,210,DIM(),BG_PANEL())
+t1(&quot;3. Load coords into Mission Planner&quot;,28,226,DIM(),BG_PANEL())
+
+fill(0,H-32,W,32,BG_CARD())
+hline(0,H-32,W,TEAL())
+t1(&quot;Press RESET to run another mapping flight&quot;,
+   80,H-22,DIM(),BG_CARD())
+
+print(&quot;\n=== FLIGHT 1 COMPLETE ===&quot;)
+print(&quot;Waypoints logged: {}&quot;.format(waypoint_count))
+print(&quot;File: /sd/waypoints.csv&quot;)
+print(&quot;Remove SD card and open on your laptop.&quot;)
+</pre>
+</div>
+
+<h3>11.3 — Unified Main Program (automatic flight-mode detection)</h3>
+<p>This is the final, complete program that combines the mapping and data-collection logic into a single script. On startup it checks whether a waypoints file already exists on the SD card, and automatically chooses to run either a mapping flight or a data collection flight without requiring any manual switch or reconfiguration in the field.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">drone_pod_main.py</span><span class="filemeta">868 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+DRONE POD — UNIFIED MAIN SCRIPT
+Automatically detects which flight mode to run:
+
+  FLIGHT 1 — MAPPING MODE
+    waypoints.csv does not exist on SD card
+    Drone flies field, GPS + BLE RSSI logs stick locations
+    Result: /sd/waypoints.csv
+
+  FLIGHT 2+ — DATA COLLECTION MODE
+    waypoints.csv exists on SD card
+    Drone navigates to each waypoint, RF wake + BLE collect
+    Result: /sd/drone_data.csv
+
+Press RESET to restart. Delete waypoints.csv from SD card
+to force a new mapping flight.
+
+Hardware:
+  GPS:    PA1616S UART0  GP0=TX GP1=RX
+  SD:     SPI1    GP26=SCK GP27=MOSI GP28=MISO GP22=CS
+  RTC:    I2C1    GP10=SDA GP11=SCL
+  RF:     GP20    TWS-BS-3 DATA
+  LCD:    ST7796  480x320 (built-in on board)
+  TFT:    ST7735  128x160 GP2=SCK GP3=MOSI GP16=DC GP17=RST GP18=CS
+&quot;&quot;&quot;
+from machine import Pin, PWM
+try:
+    for p in [12, 13]:
+        try:
+            x = PWM(Pin(p)); x.duty_u16(0); x.deinit()
+        except: pass
+    Pin(12, Pin.OUT).off()
+    Pin(13, Pin.OUT).off()
+except: pass
+
+import bluetooth, time, machine, os
+import LCD
+try:
+    from st7735_display import (init_tft, tft_draw_base, tft_status,
+                                 tft_mac, tft_rows, tft_eof,
+                                 tft_gps, tft_waypoint, tft_footer)
+    _tft_ok = init_tft()
+except Exception as _e:
+    print(&quot;ST7735 not available: {}&quot;.format(_e))
+    _tft_ok = False
+    def tft_draw_base(): pass
+    def tft_status(*a,**k): pass
+    def tft_mac(*a,**k): pass
+    def tft_rows(*a,**k): pass
+    def tft_eof(*a,**k): pass
+    def tft_gps(*a,**k): pass
+    def tft_waypoint(*a,**k): pass
+    def tft_footer(*a,**k): pass
+
+# ── GPS ───────────────────────────────────────────────────────
+GPS_TX = 0;  GPS_RX = 1
+
+# ── SD ────────────────────────────────────────────────────────
+SD_SPI=1; SD_SCK=26; SD_MOSI=27; SD_MISO=28; SD_CS=22
+
+# ── RTC ───────────────────────────────────────────────────────
+RTC_SDA=10; RTC_SCL=11; DS3231=0x68
+
+# ── RF ────────────────────────────────────────────────────────
+RF_PIN = Pin(20, Pin.OUT)
+RF_PIN.off()
+
+# ── Files ─────────────────────────────────────────────────────
+WAYPOINT_FILE = &quot;/sd/waypoints.csv&quot;
+DATA_FILE     = &quot;/sd/drone_data.csv&quot;
+
+# ── BLE ───────────────────────────────────────────────────────
+SERVICE_HEX_BE = &quot;701b9b55&quot;
+SERVICE_HEX_LE = &quot;559b1b70&quot;
+NOTIFY_UUID    = &quot;bd60d2fc03044af2b531f5bfa429eb91&quot;
+WRITE_UUID     = &quot;bd60d2fc03044af2b531f5bfa429eb92&quot;
+END_MARKER     = &quot;End of File&quot;
+RSSI_THRESHOLD = -60
+
+_IRQ_SCAN_RESULT                 = 5
+_IRQ_PERIPHERAL_CONNECT          = 7
+_IRQ_PERIPHERAL_DISCONNECT       = 8
+_IRQ_GATTC_CHARACTERISTIC_RESULT = 11
+_IRQ_GATTC_CHARACTERISTIC_DONE   = 12
+_IRQ_GATTC_NOTIFY                = 18
+_IRQ_GATTC_INDICATE              = 19
+
+
+# ════════════════════════════════════════════════════════════
+#  COLOURS
+# ════════════════════════════════════════════════════════════
+def C(r,g,b): return LCD.RGB(r,g,b)
+BG_DEEP  = lambda: C(4,   8,   20)
+BG_CARD  = lambda: C(10,  18,  42)
+BG_PANEL = lambda: C(16,  28,  60)
+TEAL     = lambda: C(0,   210, 190)
+GOLD     = lambda: C(255, 200, 0)
+GREEN_OK = lambda: C(50,  230, 100)
+RED_ERR  = lambda: C(230, 60,  60)
+ORANGE   = lambda: C(255, 140, 0)
+WHITE    = lambda: C(240, 245, 255)
+DIM      = lambda: C(80,  100, 140)
+CYAN_LT  = lambda: C(100, 220, 255)
+PURPLE   = lambda: C(180, 100, 255)
+
+W=480; H=320
+
+def safe(s):
+    return &quot;&quot;.join(c for c in str(s) if 32 &lt;= ord(c) &lt;= 126)
+
+def fill(x,y,w,h,col):  LCD.Solid_Box(x,y,x+w-1,y+h-1,col)
+def hline(x,y,w,col):   LCD.Line(x,y,x+w-1,y,col)
+def vline(x,y,h,col):   LCD.Line(x,y,x,y+h-1,col)
+def t1(s,x,y,fg,bg):    LCD.Text(safe(s)[:60],x,y,fg,bg)
+def t2(s,x,y,fg,bg):    LCD.Text2(safe(s)[:28],x,y,fg,bg)
+
+def progress_bar(x,y,w,h,pct,fg,bg):
+    fill(x,y,w,h,bg)
+    bw=int(w*max(0,min(1,pct)))
+    if bw&gt;0: fill(x,y,bw,h,fg)
+    if bw&gt;2: hline(x+1,y+1,bw-2,C(255,255,255))
+
+
+# ════════════════════════════════════════════════════════════
+#  SHARED LCD ELEMENTS
+# ════════════════════════════════════════════════════════════
+
+def draw_header(mode):
+    fill(0,0,W,48,BG_CARD())
+    hline(0,48,W,TEAL())
+    t2(&quot;DRONE POD&quot;,12,8,TEAL(),BG_CARD())
+    mode_col = GOLD() if mode==&quot;MAPPING&quot; else CYAN_LT()
+    t1(&quot;FLIGHT 1 — WAYPOINT MAPPER&quot; if mode==&quot;MAPPING&quot;
+       else &quot;FLIGHT 2 — DATA COLLECTION&quot;,
+       200,16,mode_col,BG_CARD())
+
+def draw_left_panel():
+    fill(0,50,200,H-80,BG_CARD())
+    LCD.Line(200,50,200,H-30,TEAL())
+    t1(&quot;STATUS&quot;,12,58,TEAL(),BG_CARD())
+    hline(12,70,80,TEAL())
+
+def draw_right_panel(title):
+    fill(202,50,W-202,H-80,BG_DEEP())
+    t1(title,214,58,TEAL(),BG_DEEP())
+    hline(214,70,len(title)*8,TEAL())
+
+def draw_footer():
+    fill(0,H-30,W,30,BG_CARD())
+    hline(0,H-30,W,TEAL())
+
+def update_status(state,sub=&quot;&quot;):
+    cols={
+        &quot;MAPPING&quot;:GOLD(),&quot;SCANNING&quot;:GOLD(),
+        &quot;CONNECTING&quot;:CYAN_LT(),&quot;CONNECTED&quot;:GREEN_OK(),
+        &quot;RECEIVING&quot;:TEAL(),&quot;SAVING&quot;:PURPLE(),
+        &quot;RF WAKE&quot;:ORANGE(),&quot;DONE&quot;:GREEN_OK(),
+        &quot;ERROR&quot;:RED_ERR(),&quot;GPS WAIT&quot;:ORANGE(),
+    }
+    col=cols.get(state,WHITE())
+    fill(10,78,182,30,BG_PANEL())
+    fill(10,78,4,30,col)
+    t1(state,20,88,col,BG_PANEL())
+    fill(10,114,182,16,BG_CARD())
+    t1(safe(sub)[:22],10,114,DIM(),BG_CARD())
+    tft_status(state, sub)
+
+def update_footer(msg,col=None):
+    if col is None: col=WHITE()
+    fill(2,H-28,W-4,26,BG_CARD())
+    t1(safe(msg)[:70],8,H-22,col,BG_CARD())
+
+def update_indicators(gps=None,ble=None,sd=None):
+    x=390
+    if sd  is not None:
+        fill(x,4,18,14,BG_CARD())
+        t1(&quot;SD&quot;, x,8,GREEN_OK() if sd  else DIM(),BG_CARD()); x+=26
+    if ble is not None:
+        fill(x,4,22,14,BG_CARD())
+        t1(&quot;BLE&quot;,x,8,GREEN_OK() if ble else DIM(),BG_CARD()); x+=28
+    if gps is not None:
+        fill(x,4,22,14,BG_CARD())
+        t1(&quot;GPS&quot;,x,8,GREEN_OK() if gps else DIM(),BG_CARD())
+
+
+# ════════════════════════════════════════════════════════════
+#  HELPERS
+# ════════════════════════════════════════════════════════════
+
+def rtc_timestamp():
+    try:
+        i2c=machine.I2C(1,sda=machine.Pin(RTC_SDA),
+                        scl=machine.Pin(RTC_SCL),freq=100_000)
+        d=i2c.readfrom_mem(DS3231,0x00,7)
+        def b(x): return (x&gt;&gt;4)*10+(x&amp;0x0F)
+        return &quot;{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}&quot;.format(
+            b(d[6])+2000,b(d[5]&amp;0x1F),b(d[4]),
+            b(d[2]&amp;0x3F),b(d[1]),b(d[0]&amp;0x7F))
+    except:
+        return &quot;t{}&quot;.format(time.ticks_ms())
+
+def mount_sd():
+    try:
+        import sdcard
+        spi=machine.SPI(SD_SPI,baudrate=1_000_000,
+                        sck=machine.Pin(SD_SCK),
+                        mosi=machine.Pin(SD_MOSI),
+                        miso=machine.Pin(SD_MISO))
+        cs=machine.Pin(SD_CS,machine.Pin.OUT)
+        sd=sdcard.SDCard(spi,cs)
+        try: os.umount(&quot;/sd&quot;)
+        except: pass
+        os.mount(os.VfsFat(sd),&quot;/sd&quot;)
+        print(&quot;SD mounted OK&quot;)
+        return True
+    except Exception as e:
+        print(&quot;SD failed: {}&quot;.format(e))
+        return False
+
+def rf_wake():
+    update_status(&quot;RF WAKE&quot;,&quot;Waking stick...&quot;)
+    update_footer(&quot;Sending RF wake-up signal...&quot;,ORANGE())
+    RF_PIN.on()
+    time.sleep_ms(500)
+    RF_PIN.off()
+    print(&quot;[RF] Pulse sent&quot;)
+    time.sleep_ms(2000)
+
+def nmea_to_decimal(raw, direction):
+    try:
+        raw=raw.strip()
+        if not raw or len(raw)&lt;4: return None
+        if direction in [&#x27;N&#x27;,&#x27;S&#x27;]:
+            deg=float(raw[:2]); mins=float(raw[2:])
+        else:
+            deg=float(raw[:3]); mins=float(raw[3:])
+        dec=deg+mins/60.0
+        if direction in [&#x27;S&#x27;,&#x27;W&#x27;]: dec=-dec
+        return dec
+    except: return None
+
+current_lat=None; current_lon=None; gps_fix=False
+
+def read_gps(gps_uart):
+    global current_lat,current_lon,gps_fix
+    if not gps_uart.any(): return
+    try:
+        line=gps_uart.readline()
+        if line is None: return
+        line=line.decode(&#x27;utf-8&#x27;,&#x27;ignore&#x27;).strip()
+        if line.startswith(&#x27;$GPRMC&#x27;) or line.startswith(&#x27;$GNRMC&#x27;):
+            p=line.split(&#x27;,&#x27;)
+            if len(p)&gt;=7 and p[2]==&#x27;A&#x27;:
+                la=nmea_to_decimal(p[3],p[4])
+                lo=nmea_to_decimal(p[5],p[6])
+                if la and lo:
+                    current_lat=la; current_lon=lo; gps_fix=True
+        elif line.startswith(&#x27;$GPGGA&#x27;) or line.startswith(&#x27;$GNGGA&#x27;):
+            p=line.split(&#x27;,&#x27;)
+            if len(p)&gt;6 and p[6]!=&#x27;0&#x27; and p[2]:
+                la=nmea_to_decimal(p[2],p[3])
+                lo=nmea_to_decimal(p[4],p[5])
+                if la and lo:
+                    current_lat=la; current_lon=lo; gps_fix=True
+    except: pass
+
+def update_gps_display(y_start):
+    fill(10,y_start,182,34,BG_CARD())
+    if gps_fix and current_lat:
+        t1(&quot;GPS OK&quot;,10,y_start,GREEN_OK(),BG_CARD())
+        t1(&quot;{:.5f}&quot;.format(current_lat),10,y_start+14,CYAN_LT(),BG_CARD())
+        t1(&quot;{:.5f}&quot;.format(current_lon),10,y_start+26,CYAN_LT(),BG_CARD()) if current_lon else None
+    else:
+        t1(&quot;GPS: no fix&quot;,10,y_start,GOLD(),BG_CARD())
+        t1(&quot;Go outside&quot;,10,y_start+14,DIM(),BG_CARD())
+
+
+# ════════════════════════════════════════════════════════════
+#  FLIGHT 1 — WAYPOINT MAPPING MODE
+# ════════════════════════════════════════════════════════════
+
+# Scrolling right panel for mapping
+_wp_row=0
+WP_ROW_H=20; WP_ROWS=11; WP_Y=78
+
+def add_waypoint_row(mac,lat,lon):
+    global _wp_row
+    y=WP_Y+(_wp_row%WP_ROWS)*WP_ROW_H
+    bg=BG_PANEL() if _wp_row%2==0 else BG_DEEP()
+    fill(204,y,274,WP_ROW_H-1,bg)
+    t1(mac[-8:],206,y+1,GOLD(),bg)
+    t1(&quot;{:.4f}&quot;.format(lat),206,y+11,CYAN_LT(),bg)
+    _wp_row+=1
+
+logged_macs=set()
+latest_rssi={}
+best_mac_map=None; best_rssi_map=-999
+
+def ble_irq_map(event,data):
+    global best_mac_map,best_rssi_map
+    if event==_IRQ_SCAN_RESULT:
+        addr_type,addr,adv_type,rssi,adv_data=data
+        raw=bytes(adv_data).hex()
+        if SERVICE_HEX_BE in raw or SERVICE_HEX_LE in raw:
+            mac=&quot;:&quot;.join(&quot;{:02X}&quot;.format(b) for b in reversed(bytes(addr)))
+            latest_rssi[mac]=int(rssi)
+            if int(rssi)&gt;best_rssi_map:
+                best_rssi_map=int(rssi); best_mac_map=mac
+
+def run_mapping_flight(gps_uart):
+    global best_mac_map,best_rssi_map,logged_macs,latest_rssi
+    waypoint_count=0
+
+    # Draw mapping UI
+    LCD.Clear(BG_DEEP())
+    draw_header(&quot;MAPPING&quot;)
+    draw_left_panel()
+    draw_right_panel(&quot;WAYPOINTS LOGGED&quot;)
+    draw_footer()
+    tft_draw_base()
+    tft_status(&quot;MAPPING&quot;,&quot;Waiting for GPS&quot;)
+
+    # Left panel labels
+    t1(&quot;GPS&quot;,12,136,TEAL(),BG_CARD())
+    hline(12,148,30,TEAL())
+    t1(&quot;NEAREST&quot;,12,200,TEAL(),BG_CARD())
+    hline(12,212,50,TEAL())
+    t1(&quot;LOGGED&quot;,12,256,TEAL(),BG_CARD())
+    hline(12,268,44,TEAL())
+
+    update_status(&quot;GPS WAIT&quot;,&quot;Getting fix...&quot;)
+    update_footer(&quot;Go outside — waiting for GPS fix...&quot;,GOLD())
+    update_indicators(gps=False,ble=False,sd=True)
+
+    # Start BLE passive scan
+    ble=bluetooth.BLE()
+    ble.active(True)
+    ble.irq(ble_irq_map)
+    ble.gap_scan(0,200000,100000,False)
+    update_indicators(gps=False,ble=True,sd=True)
+
+    print(&quot;Mapping flight started.&quot;)
+    print(&quot;Fly over sensor sticks. CTRL+C to end.&quot;)
+
+    last_gps_update=time.ticks_ms()
+    last_ble_update=time.ticks_ms()
+
+    try:
+        while True:
+            read_gps(gps_uart)
+            now=time.ticks_ms()
+
+            # Update GPS display every 2s
+            if time.ticks_diff(now,last_gps_update)&gt;2000:
+                update_gps_display(152)
+                update_indicators(gps=gps_fix,ble=True,sd=True)
+                tft_gps(current_lat, current_lon, gps_fix)
+                if gps_fix:
+                    update_status(&quot;MAPPING&quot;,&quot;Fly over sticks&quot;)
+                    update_footer(
+                        &quot;GPS fix OK — fly slowly over each stick&quot;,
+                        GREEN_OK())
+                last_gps_update=now
+
+            # Update BLE + check threshold every 1s
+            if time.ticks_diff(now,last_ble_update)&gt;1000:
+                # Show nearest stick
+                if best_mac_map:
+                    fill(10,216,182,36,BG_CARD())
+                    t1(best_mac_map[-8:],10,216,WHITE(),BG_CARD())
+                    rssi_col=GREEN_OK() if best_rssi_map&gt;=RSSI_THRESHOLD else ORANGE()
+                    t1(&quot;RSSI: {}&quot;.format(best_rssi_map),10,230,
+                       rssi_col,BG_CARD())
+                else:
+                    fill(10,216,182,36,BG_CARD())
+                    t1(&quot;No sticks found&quot;,10,216,DIM(),BG_CARD())
+
+                # Show waypoint count
+                fill(10,272,182,20,BG_CARD())
+                t2(str(waypoint_count),10,272,GREEN_OK(),BG_CARD())
+
+                # Check each stick
+                for mac,rssi in latest_rssi.items():
+                    if mac in logged_macs: continue
+                    if rssi&gt;=RSSI_THRESHOLD and gps_fix:
+                        ts=rtc_timestamp()
+                        try:
+                            with open(WAYPOINT_FILE,&quot;a&quot;) as f:
+                                f.write(&quot;{},{:.6f},{:.6f},{},{}\n&quot;.format(
+                                    mac,current_lat,current_lon,rssi,ts))
+                            logged_macs.add(mac)
+                            waypoint_count+=1
+                            add_waypoint_row(mac,current_lat,current_lon)
+                            tft_waypoint(waypoint_count,mac,
+                                         current_lat,current_lon)
+                            update_footer(
+                                &quot;SAVED: {} at {:.4f},{:.4f}&quot;.format(
+                                    mac[-8:],current_lat,current_lon),
+                                GREEN_OK())
+                            print(&quot;Waypoint {}: {} at {:.6f},{:.6f}&quot;.format(
+                                waypoint_count,mac,current_lat,current_lon))
+                        except Exception as e:
+                            print(&quot;Save error: {}&quot;.format(e))
+
+                best_rssi_map=-999; best_mac_map=None
+                last_ble_update=now
+
+            time.sleep_ms(50)
+
+    except KeyboardInterrupt:
+        pass
+
+    ble.gap_scan(None)
+    ble.active(False)
+
+    # Summary screen
+    LCD.Clear(BG_DEEP())
+    fill(0,0,W,52,BG_CARD())
+    hline(0,52,W,GREEN_OK())
+    t2(&quot;FLIGHT 1 COMPLETE&quot;,30,10,GREEN_OK(),BG_CARD())
+    fill(20,70,W-40,40,BG_PANEL())
+    t1(&quot;Waypoints saved: {}&quot;.format(waypoint_count),28,85,WHITE(),BG_PANEL())
+    fill(20,120,W-40,30,BG_PANEL())
+    t1(&quot;File: /sd/waypoints.csv&quot;,28,133,CYAN_LT(),BG_PANEL())
+    fill(20,162,W-40,80,BG_PANEL())
+    t1(&quot;Next steps:&quot;,28,170,GOLD(),BG_PANEL())
+    t1(&quot;1. Remove SD card&quot;,28,186,DIM(),BG_PANEL())
+    t1(&quot;2. Load waypoints into Mission Planner&quot;,28,202,DIM(),BG_PANEL())
+    t1(&quot;3. Press RESET for data collection&quot;,28,218,DIM(),BG_PANEL())
+    fill(0,H-32,W,32,BG_CARD())
+    hline(0,H-32,W,TEAL())
+    t1(&quot;Press RESET to run data collection flight&quot;,
+       60,H-22,WHITE(),BG_CARD())
+
+    print(&quot;Flight 1 done. {} waypoints saved.&quot;.format(waypoint_count))
+
+
+# ════════════════════════════════════════════════════════════
+#  FLIGHT 2 — DATA COLLECTION MODE
+# ════════════════════════════════════════════════════════════
+
+# BLE state for collection
+found_ab=None; found_type=None; found_mac=None
+connected=False; conn_h=None
+chars_done=False; nfy_h=None; wrt_h=None
+data_lines=[]; eof_count=0
+_data_row_idx=0
+
+DATA_ROW_H=16; DATA_ROWS=14; DATA_Y=78
+
+def add_data_row(line):
+    global _data_row_idx
+    line=safe(line)[:34]
+    y=DATA_Y+(_data_row_idx%DATA_ROWS)*DATA_ROW_H
+    if _data_row_idx&gt;=DATA_ROWS: fill(204,y,274,DATA_ROW_H,BG_DEEP())
+    bg=BG_PANEL() if _data_row_idx%2==0 else BG_DEEP()
+    fill(204,y,274,DATA_ROW_H-1,bg)
+    t1(line,206,y+1,CYAN_LT(),bg)
+    ny=DATA_Y+((_data_row_idx+1)%DATA_ROWS)*DATA_ROW_H
+    hline(204,ny,274,TEAL())
+    _data_row_idx+=1
+
+def update_progress(rows,eof):
+    fill(10,290,182,26,BG_CARD())
+    t1(&quot;ROWS: {}  EOF: {}/3&quot;.format(rows,eof),10,292,
+       GREEN_OK() if eof&gt;=3 else GOLD(),BG_CARD())
+    progress_bar(10,304,182,6,min(1.0,eof/3.0),TEAL(),BG_PANEL())
+    tft_rows(rows)
+    tft_eof(eof)
+
+def update_stick_info(num,total,mac):
+    fill(10,136,182,56,BG_CARD())
+    t1(&quot;STICK {}/{}&quot;.format(num,total),10,136,GOLD(),BG_CARD())
+    hline(10,150,80,GOLD())
+    if mac:
+        t1(mac[:9],10,154,WHITE(),BG_CARD())
+        t1(mac[9:],10,168,WHITE(),BG_CARD())
+
+def update_session_progress(done,total):
+    fill(10,200,182,24,BG_CARD())
+    t1(&quot;SESSION: {}/{}&quot;.format(done,total),10,200,DIM(),BG_CARD())
+    progress_bar(10,214,182,6,done/total if total&gt;0 else 0,
+                 TEAL(),BG_PANEL())
+
+def ble_irq_collect(event,data):
+    global found_ab,found_type,found_mac
+    global connected,conn_h,chars_done,nfy_h,wrt_h
+    global data_lines,eof_count
+
+    if event==_IRQ_SCAN_RESULT:
+        addr_type,addr,adv_type,rssi,adv_data=data
+        raw=bytes(adv_data).hex()
+        if (SERVICE_HEX_BE in raw or SERVICE_HEX_LE in raw) and found_ab is None:
+            found_ab=bytes(addr); found_type=int(addr_type)
+            found_mac=&quot;:&quot;.join(&quot;{:02X}&quot;.format(b) for b in reversed(found_ab))
+            print(&quot;Found: {} RSSI={}&quot;.format(found_mac,rssi))
+            ble_collect.gap_scan(None)
+
+    elif event==_IRQ_PERIPHERAL_CONNECT:
+        c2,_,_=data; conn_h=c2; connected=True
+        print(&quot;Connected handle={}&quot;.format(c2))
+
+    elif event==_IRQ_PERIPHERAL_DISCONNECT:
+        global connected
+        connected=False; print(&quot;Disconnected&quot;)
+
+    elif event==_IRQ_GATTC_CHARACTERISTIC_RESULT:
+        _,_,vh,_,uuid=data
+        u=str(uuid).lower().replace(&quot;-&quot;,&quot;&quot;)
+        if NOTIFY_UUID in u: nfy_h=vh
+        elif WRITE_UUID in u: wrt_h=vh
+
+    elif event==_IRQ_GATTC_CHARACTERISTIC_DONE:
+        global chars_done
+        chars_done=True
+        print(&quot;Discovery done notify={} write={}&quot;.format(nfy_h,wrt_h))
+
+    elif event==_IRQ_GATTC_NOTIFY or event==_IRQ_GATTC_INDICATE:
+        _,_,nd=data
+        try:
+            chunk=bytes(nd).decode(&quot;utf-8&quot;,&quot;ignore&quot;)
+            line=chunk.strip()
+            print(&quot;DATA: {}&quot;.format(line[:60]))
+            data_lines.append(chunk)
+            if line and END_MARKER not in line:
+                add_data_row(line)
+            if END_MARKER in chunk:
+                eof_count+=1
+                print(&quot;EOF #{}&quot;.format(eof_count))
+            update_progress(len(data_lines),eof_count)
+        except: pass
+
+def reset_ble_state():
+    global found_ab,found_type,found_mac,connected,conn_h
+    global chars_done,nfy_h,wrt_h,data_lines,eof_count,_data_row_idx
+    found_ab=None; found_type=None; found_mac=None
+    connected=False; conn_h=None
+    chars_done=False; nfy_h=None; wrt_h=None
+    data_lines=[]; eof_count=0; _data_row_idx=0
+
+def sd_save(ts,stick_num,mac,lines):
+    count=0
+    try:
+        with open(DATA_FILE,&quot;a&quot;) as f:
+            for line in lines:
+                line=line.strip()
+                if line and END_MARKER not in line:
+                    f.write(&#x27;{},{},{},&quot;{}&quot;\n&#x27;.format(ts,stick_num,mac,line))
+                    count+=1
+        print(&quot;Saved {} rows&quot;.format(count))
+    except Exception as e:
+        print(&quot;Save error: {}&quot;.format(e))
+    return count
+
+def collect_one_stick(stick_num,total,gps_uart=None):
+    global found_ab,found_type,found_mac,connected
+    global conn_h,chars_done,nfy_h,wrt_h,data_lines,eof_count
+
+    # Clear data panel
+    fill(204,78,274,H-108,BG_DEEP())
+    t1(&quot;SENSOR DATA&quot;,214,58,TEAL(),BG_DEEP())
+    hline(214,70,120,TEAL())
+    update_progress(0,0)
+
+    # Read GPS and show current drone position
+    if gps_uart is not None:
+        read_gps(gps_uart)
+        update_gps_display(242)
+        tft_gps(current_lat, current_lon, gps_fix)
+        update_indicators(gps=gps_fix)
+
+    # RF wake
+    rf_wake()
+
+    # Scan
+    update_status(&quot;SCANNING&quot;,&quot;Stick {}...&quot;.format(stick_num))
+    update_footer(&quot;Scanning for stick {}...&quot;.format(stick_num),GOLD())
+    ble_collect.gap_scan(30000,30000,30000)
+
+    deadline=time.ticks_add(time.ticks_ms(),32000)
+    while found_ab is None:
+        if time.ticks_diff(deadline,time.ticks_ms())&lt;=0:
+            ble_collect.gap_scan(None)
+            print(&quot;Stick {} not found&quot;.format(stick_num))
+            return {&quot;mac&quot;:&quot;NOT FOUND&quot;,&quot;rows&quot;:0,&quot;ts&quot;:&quot;--&quot;,&quot;status&quot;:&quot;SKIP&quot;}
+        time.sleep_ms(100)
+
+    mac=found_mac
+    update_stick_info(stick_num,total,mac)
+    update_status(&quot;CONNECTING&quot;,mac[-8:])
+    update_footer(&quot;Found {} — connecting...&quot;.format(mac[-8:]))
+    tft_mac(mac)
+
+    # Connect
+    time.sleep_ms(300)
+    ble_collect.gap_connect(found_type,found_ab)
+    deadline=time.ticks_add(time.ticks_ms(),8000)
+    while not connected:
+        if time.ticks_diff(deadline,time.ticks_ms())&lt;=0:
+            return {&quot;mac&quot;:mac,&quot;rows&quot;:0,&quot;ts&quot;:&quot;--&quot;,&quot;status&quot;:&quot;FAIL&quot;}
+        time.sleep_ms(50)
+
+    update_status(&quot;CONNECTED&quot;,&quot;Discovering...&quot;)
+
+    # Discover
+    time.sleep_ms(1500)
+    chars_done=False
+    ble_collect.gattc_discover_characteristics(conn_h,1,0xFFFF)
+    deadline=time.ticks_add(time.ticks_ms(),10000)
+    while not chars_done:
+        if time.ticks_diff(deadline,time.ticks_ms())&lt;=0:
+            try: ble_collect.gap_disconnect(conn_h)
+            except: pass
+            return {&quot;mac&quot;:mac,&quot;rows&quot;:0,&quot;ts&quot;:&quot;--&quot;,&quot;status&quot;:&quot;FAIL&quot;}
+        time.sleep_ms(50)
+
+    if nfy_h is None or wrt_h is None:
+        try: ble_collect.gap_disconnect(conn_h)
+        except: pass
+        return {&quot;mac&quot;:mac,&quot;rows&quot;:0,&quot;ts&quot;:&quot;--&quot;,&quot;status&quot;:&quot;FAIL&quot;}
+
+    # Enable CCCD
+    ble_collect.gattc_write(conn_h,nfy_h+1,b&#x27;\x01\x00&#x27;,1)
+    time.sleep_ms(500)
+    ble_collect.gattc_write(conn_h,nfy_h+1,b&#x27;\x03\x00&#x27;,1)
+    time.sleep_ms(1000)
+
+    # Send HelloWorld
+    update_status(&quot;RECEIVING&quot;,&quot;Data incoming...&quot;)
+    update_footer(&quot;Receiving data from stick {}...&quot;.format(stick_num))
+    ble_collect.gattc_write(conn_h,wrt_h,b&quot;HelloWorld&quot;,1)
+    time.sleep_ms(500)
+
+    # Wait for data
+    deadline=time.ticks_add(time.ticks_ms(),90000)
+    last_len=0; stall=0
+    while eof_count&lt;3 and connected:
+        if time.ticks_diff(deadline,time.ticks_ms())&lt;=0: break
+        cur=len(data_lines)
+        if cur==last_len:
+            stall+=1
+            if stall&gt;300: break
+        else:
+            stall=0; last_len=cur
+        time.sleep_ms(50)
+
+    ts=rtc_timestamp()
+    rows=0
+    if data_lines:
+        update_status(&quot;SAVING&quot;,&quot;Writing SD...&quot;)
+        rows=sd_save(ts,stick_num,mac,data_lines)
+
+    try: ble_collect.gap_disconnect(conn_h)
+    except: pass
+    time.sleep_ms(500)
+
+    status=&quot;OK&quot; if rows&gt;0 or len(data_lines)&gt;0 else &quot;FAIL&quot;
+    return {&quot;mac&quot;:mac,&quot;rows&quot;:rows,&quot;ts&quot;:ts,&quot;status&quot;:status}
+
+def run_data_collection(gps_uart):
+    global ble_collect
+
+    # Read waypoints
+    waypoints=[]
+    try:
+        with open(WAYPOINT_FILE,&quot;r&quot;) as f:
+            for line in f:
+                line=line.strip()
+                if line and not line.startswith(&quot;mac&quot;):
+                    parts=line.split(&quot;,&quot;)
+                    if len(parts)&gt;=3:
+                        waypoints.append({
+                            &quot;mac&quot;:parts[0],
+                            &quot;lat&quot;:float(parts[1]),
+                            &quot;lon&quot;:float(parts[2])
+                        })
+    except Exception as e:
+        print(&quot;Could not read waypoints: {}&quot;.format(e))
+        waypoints=[]
+
+    total=len(waypoints) if waypoints else 10
+    print(&quot;Data collection: {} waypoints loaded&quot;.format(total))
+
+    # Init data file
+    try:
+        os.stat(DATA_FILE)
+    except:
+        with open(DATA_FILE,&quot;w&quot;) as f:
+            f.write(&quot;collected_at,stick_num,stick_mac,raw_data\n&quot;)
+
+    # Draw collection UI
+    LCD.Clear(BG_DEEP())
+    draw_header(&quot;COLLECT&quot;)
+    draw_left_panel()
+    draw_right_panel(&quot;SENSOR DATA&quot;)
+    draw_footer()
+    tft_draw_base()
+    tft_status(&quot;SCANNING&quot;)
+    t1(&quot;STICK&quot;,12,136,TEAL(),BG_CARD())
+    hline(12,150,30,TEAL())
+    t1(&quot;SESSION&quot;,12,200,TEAL(),BG_CARD())
+    hline(12,214,50,TEAL())
+    t1(&quot;DRONE GPS&quot;,12,224,TEAL(),BG_CARD())
+    hline(12,238,68,TEAL())
+    update_indicators(sd=True,ble=True,gps=False)
+
+    # Init BLE
+    ble_collect=bluetooth.BLE()
+    ble_collect.active(True)
+    ble_collect.irq(ble_irq_collect)
+
+    session_results=[]
+
+    for i,wp in enumerate(waypoints if waypoints else [{}]*total):
+        stick_num=i+1
+        reset_ble_state()
+        update_session_progress(i,total)
+
+        mac_hint=wp.get(&quot;mac&quot;,&quot;&quot;) if waypoints else &quot;&quot;
+        if mac_hint:
+            update_footer(
+                &quot;Flying to waypoint {} — {}&quot;.format(stick_num,mac_hint[-8:]),
+                CYAN_LT())
+        else:
+            update_footer(
+                &quot;Collecting stick {}...&quot;.format(stick_num),CYAN_LT())
+
+        result=collect_one_stick(stick_num,total,gps_uart)
+        result[&quot;num&quot;]=stick_num
+        session_results.append(result)
+        update_session_progress(stick_num,total)
+
+        col=GREEN_OK() if result[&quot;status&quot;]==&quot;OK&quot; else ORANGE()
+        update_footer(&quot;Stick {}/{} — {} — {} rows&quot;.format(
+            stick_num,total,result[&quot;status&quot;],result[&quot;rows&quot;]),col)
+
+        print(&quot;Stick {}: {} {} rows&quot;.format(
+            stick_num,result[&quot;status&quot;],result[&quot;rows&quot;]))
+
+        if stick_num&lt;total:
+            time.sleep_ms(2000)
+
+    ble_collect.active(False)
+
+    # Results screen
+    LCD.Clear(BG_DEEP())
+    fill(0,0,W,52,BG_CARD())
+    hline(0,52,W,GREEN_OK())
+    t2(&quot;COLLECTION DONE&quot;,40,10,GREEN_OK(),BG_CARD())
+
+    ok=sum(1 for r in session_results if r[&quot;status&quot;]==&quot;OK&quot;)
+    total_rows=sum(r[&quot;rows&quot;] for r in session_results)
+    fill(0,56,W,38,BG_PANEL())
+    t1(&quot;STICKS: {}/{}   TOTAL ROWS: {}&quot;.format(
+        ok,len(session_results),total_rows),
+       12,70,WHITE(),BG_PANEL())
+
+    hline(0,96,W,DIM())
+    t1(&quot;STICK&quot;,10,100,TEAL(),BG_DEEP())
+    t1(&quot;MAC&quot;,60,100,TEAL(),BG_DEEP())
+    t1(&quot;ROWS&quot;,300,100,TEAL(),BG_DEEP())
+    t1(&quot;STATUS&quot;,420,100,TEAL(),BG_DEEP())
+    hline(0,114,W,DIM())
+
+    y=118
+    for r in session_results:
+        if y&gt;270: break
+        bg=BG_PANEL() if r[&quot;num&quot;]%2==0 else BG_CARD()
+        fill(0,y,W,20,bg)
+        col=GREEN_OK() if r[&quot;status&quot;]==&quot;OK&quot; else RED_ERR()
+        fill(0,y,4,20,col)
+        t1(str(r[&quot;num&quot;]),8,y+3,DIM(),bg)
+        t1(r[&quot;mac&quot;][:17],40,y+3,WHITE(),bg)
+        t1(str(r[&quot;rows&quot;]),300,y+3,CYAN_LT(),bg)
+        t1(r[&quot;status&quot;],420,y+3,col,bg)
+        y+=22
+
+    fill(0,H-32,W,32,BG_CARD())
+    hline(0,H-32,W,TEAL())
+    t1(&quot;Remove SD card  -&gt;  open drone_data.csv&quot;,
+       60,H-22,WHITE(),BG_CARD())
+
+    print(&quot;=== DONE === {} sticks {} rows&quot;.format(ok,total_rows))
+
+
+# ════════════════════════════════════════════════════════════
+#  MAIN — AUTO DETECT FLIGHT MODE
+# ════════════════════════════════════════════════════════════
+
+LCD.Init()
+time.sleep_ms(100)
+LCD.Clear(BG_DEEP())
+
+# Mount SD
+fill(0,0,W,H,BG_DEEP())
+t2(&quot;DRONE POD&quot;,40,60,TEAL(),BG_DEEP())
+t1(&quot;Initialising...&quot;,40,100,DIM(),BG_DEEP())
+
+sd_ok=mount_sd()
+if not sd_ok:
+    t1(&quot;SD card FAILED — insert card and RESET&quot;,
+       40,140,RED_ERR(),BG_DEEP())
+    raise SystemExit
+
+# Init GPS
+gps_uart=machine.UART(0,baudrate=9600,
+                      tx=machine.Pin(GPS_TX),
+                      rx=machine.Pin(GPS_RX))
+
+# Detect flight mode
+mapping_mode=True
+try:
+    os.stat(WAYPOINT_FILE)
+    # File exists — check it has data rows
+    with open(WAYPOINT_FILE,&quot;r&quot;) as f:
+        lines=[l for l in f if l.strip() and not l.startswith(&quot;mac&quot;)]
+    if len(lines)&gt;0:
+        mapping_mode=False
+        print(&quot;waypoints.csv found ({} sticks) — DATA COLLECTION mode&quot;.format(
+            len(lines)))
+    else:
+        print(&quot;waypoints.csv empty — MAPPING mode&quot;)
+except:
+    print(&quot;No waypoints.csv — MAPPING mode&quot;)
+
+# Show mode selection screen briefly
+LCD.Clear(BG_DEEP())
+fill(0,0,W,H,BG_DEEP())
+fill(0,0,W,60,BG_CARD())
+hline(0,60,W,TEAL())
+t2(&quot;DRONE POD&quot;,12,14,TEAL(),BG_CARD())
+
+if mapping_mode:
+    fill(0,80,W,80,BG_PANEL())
+    fill(0,80,6,80,GOLD())
+    t2(&quot;FLIGHT 1&quot;,20,88,GOLD(),BG_PANEL())
+    t1(&quot;WAYPOINT MAPPING MODE&quot;,20,120,WHITE(),BG_PANEL())
+    t1(&quot;No waypoints.csv found — will map stick locations&quot;,
+       20,138,DIM(),BG_PANEL())
+else:
+    fill(0,80,W,80,BG_PANEL())
+    fill(0,80,6,6,CYAN_LT())
+    t2(&quot;FLIGHT 2&quot;,20,88,CYAN_LT(),BG_PANEL())
+    t1(&quot;DATA COLLECTION MODE&quot;,20,120,WHITE(),BG_PANEL())
+    t1(&quot;waypoints.csv found — will collect sensor data&quot;,
+       20,138,DIM(),BG_PANEL())
+
+t1(&quot;Starting in 3 seconds...&quot;,20,200,DIM(),BG_DEEP())
+t1(&quot;To switch mode: delete waypoints.csv from SD card&quot;,
+   20,220,DIM(),BG_DEEP())
+
+fill(0,H-32,W,32,BG_CARD())
+hline(0,H-32,W,TEAL())
+t1(&quot;Press RESET to cancel&quot;,180,H-22,DIM(),BG_CARD())
+
+time.sleep_ms(3000)
+
+# Run selected mode
+if mapping_mode:
+    # Create waypoints file with header
+    try:
+        os.stat(WAYPOINT_FILE)
+    except:
+        with open(WAYPOINT_FILE,&quot;w&quot;) as f:
+            f.write(&quot;mac,latitude,longitude,rssi,timestamp\n&quot;)
+    run_mapping_flight(gps_uart)
+else:
+    run_data_collection(gps_uart)
+</pre>
+</div>
+
+<h3>11.4 — Real-Time Clock Setup Utility</h3>
+<p>A small one-time-use script for setting the correct date and time on the onboard real-time clock module before the first field deployment. Once run, the clock keeps accurate time indefinitely using its own battery.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">set_rtc.py</span><span class="filemeta">77 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+SET RTC TIME — Run this once before field deployment
+Sets the DS3231 RTC to the current time.
+
+Edit the TIME_TO_SET tuple below to match current time,
+then run this script. The RTC holds time on its coin cell
+battery permanently after this.
+&quot;&quot;&quot;
+from machine import Pin, PWM
+try:
+    for p in [12, 13]:
+        try:
+            x = PWM(Pin(p)); x.duty_u16(0); x.deinit()
+        except: pass
+    Pin(12, Pin.OUT).off()
+    Pin(13, Pin.OUT).off()
+except: pass
+
+import machine, time
+
+RTC_SDA = 10
+RTC_SCL = 11
+DS3231  = 0x68
+
+# ── EDIT THIS before running ──────────────────────────────────
+# Format: (year, month, day, weekday, hour, minute, second)
+# Weekday: 1=Monday 2=Tuesday 3=Wednesday 4=Thursday
+#          5=Friday 6=Saturday 7=Sunday
+TIME_TO_SET = (2026, 6, 29, 1, 9, 0, 0)
+# ─────────────────────────────────────────────────────────────
+
+def dec_to_bcd(val):
+    return ((val // 10) &lt;&lt; 4) | (val % 10)
+
+def bcd_to_dec(val):
+    return ((val &gt;&gt; 4) * 10) + (val &amp; 0x0F)
+
+def set_rtc(year, month, day, weekday, hour, minute, second):
+    i2c = machine.I2C(1, sda=machine.Pin(RTC_SDA),
+                      scl=machine.Pin(RTC_SCL), freq=100_000)
+    data = bytes([
+        dec_to_bcd(second),
+        dec_to_bcd(minute),
+        dec_to_bcd(hour),
+        dec_to_bcd(weekday),
+        dec_to_bcd(day),
+        dec_to_bcd(month),
+        dec_to_bcd(year - 2000)
+    ])
+    i2c.writeto_mem(DS3231, 0x00, data)
+    print(&quot;RTC set to: {:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}&quot;.format(
+        year, month, day, hour, minute, second))
+
+def read_rtc():
+    i2c = machine.I2C(1, sda=machine.Pin(RTC_SDA),
+                      scl=machine.Pin(RTC_SCL), freq=100_000)
+    d = i2c.readfrom_mem(DS3231, 0x00, 7)
+    return (
+        bcd_to_dec(d[6]) + 2000,
+        bcd_to_dec(d[5] &amp; 0x1F),
+        bcd_to_dec(d[4]),
+        bcd_to_dec(d[2] &amp; 0x3F),
+        bcd_to_dec(d[1]),
+        bcd_to_dec(d[0] &amp; 0x7F)
+    )
+
+# Set the time
+print(&quot;Setting RTC...&quot;)
+set_rtc(*TIME_TO_SET)
+
+# Verify it was set correctly
+time.sleep_ms(500)
+y, mo, d, h, mi, s = read_rtc()
+print(&quot;Verified RTC reads: {:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}&quot;.format(
+    y, mo, d, h, mi, s))
+print(&quot;RTC is now set. You can remove this script.&quot;)
+print(&quot;The DS3231 coin cell will keep time even when Pico W is off.&quot;)
+</pre>
+</div>
+
+<h3>11.5 — Small Display Driver (ST7735, 128 by 160 pixels)</h3>
+<p>A complete, from-scratch graphics driver written for the small secondary display intended for the final compact circuit board. It includes low-level routines for drawing filled rectangles, lines, and text, along with higher-level helper functions that mirror the drone pod's status, GPS position, and collected data summary in a condensed form.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">st7735_display.py</span><span class="filemeta">295 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+ST7735 1.8&quot; TFT DISPLAY DRIVER
+Adafruit 1.8&quot; TFT breakout (ST7735R green tab variant)
+Self-contained — no external library needed.
+
+Wiring:
+  VCC   → 3.3V
+  GND   → GND
+  SCK   → GP2
+  MOSI  → GP3
+  TCS   → GP18  (TFT chip select)
+  TDC   → GP16  (data/command)
+  RESET → GP17
+  LITE  → 3.3V
+  MISO  → not needed
+  CCS   → not needed
+&quot;&quot;&quot;
+import machine, time, framebuf
+
+_SCK  = 2
+_MOSI = 3
+_CS   = 18
+_DC   = 16
+_RST  = 17
+
+# Adafruit 1.8&quot; is 128 wide x 160 tall (portrait)
+W = 128
+H = 160
+
+# Colour helpers
+def color(r, g, b):
+    return ((r &amp; 0xF8) &lt;&lt; 8) | ((g &amp; 0xFC) &lt;&lt; 3) | (b &gt;&gt; 3)
+
+BLACK  = color(0,   0,   0)
+WHITE  = color(255, 255, 255)
+TEAL   = color(0,   210, 190)
+GOLD   = color(255, 200, 0)
+GREEN  = color(50,  230, 100)
+RED    = color(230, 60,  60)
+ORANGE = color(255, 140, 0)
+CYAN   = color(100, 220, 255)
+NAVY   = color(4,   8,   20)
+CARD   = color(10,  18,  42)
+PANEL  = color(16,  28,  60)
+DIM    = color(80,  100, 140)
+
+
+class ST7735:
+    def __init__(self):
+        self._spi = machine.SPI(0, baudrate=20_000_000,
+                                polarity=0, phase=0,
+                                sck=machine.Pin(_SCK),
+                                mosi=machine.Pin(_MOSI))
+        self._cs  = machine.Pin(_CS,  machine.Pin.OUT)
+        self._dc  = machine.Pin(_DC,  machine.Pin.OUT)
+        self._rst = machine.Pin(_RST, machine.Pin.OUT)
+        self._cs.on()
+        self._init()
+
+    def _cmd(self, cmd, data=None):
+        self._dc.off()
+        self._cs.off()
+        self._spi.write(bytes([cmd]))
+        self._cs.on()
+        if data is not None:
+            self._dc.on()
+            self._cs.off()
+            self._spi.write(bytes(data))
+            self._cs.on()
+
+    def _init(self):
+        # Hardware reset
+        self._rst.off(); time.sleep_ms(100)
+        self._rst.on();  time.sleep_ms(100)
+
+        # Adafruit ST7735R green tab init sequence
+        self._cmd(0x01);        time.sleep_ms(150)  # SWRESET
+        self._cmd(0x11);        time.sleep_ms(500)  # SLPOUT
+
+        # Frame rate
+        self._cmd(0xB1, [0x01, 0x2C, 0x2D])
+        self._cmd(0xB2, [0x01, 0x2C, 0x2D])
+        self._cmd(0xB3, [0x01, 0x2C, 0x2D, 0x01, 0x2C, 0x2D])
+
+        # Display inversion
+        self._cmd(0xB4, [0x07])
+
+        # Power control
+        self._cmd(0xC0, [0xA2, 0x02, 0x84])
+        self._cmd(0xC1, [0xC5])
+        self._cmd(0xC2, [0x0A, 0x00])
+        self._cmd(0xC3, [0x8A, 0x2A])
+        self._cmd(0xC4, [0x8A, 0xEE])
+        self._cmd(0xC5, [0x0E])
+
+        self._cmd(0x20)  # Inversion off
+
+        # ── MADCTL for Adafruit 1.8&quot; portrait top-left origin ──
+        # MX=0 MY=1 MV=0 ML=0 RGB=1 MH=0 → 0x48
+        self._cmd(0x36, [0x48])
+
+        self._cmd(0x3A, [0x05])  # 16-bit colour
+
+        # Column offset = 2, row offset = 1 for this variant
+        self._xoff = 2
+        self._yoff = 1
+
+        # Gamma
+        self._cmd(0xE0, [
+            0x0F, 0x1A, 0x0F, 0x18, 0x2F, 0x28, 0x20, 0x22,
+            0x1F, 0x1B, 0x23, 0x37, 0x00, 0x07, 0x02, 0x10])
+        self._cmd(0xE1, [
+            0x0F, 0x1B, 0x0F, 0x17, 0x33, 0x2C, 0x29, 0x2E,
+            0x30, 0x30, 0x39, 0x3F, 0x00, 0x07, 0x03, 0x10])
+
+        self._cmd(0x13); time.sleep_ms(10)   # NORON
+        self._cmd(0x29); time.sleep_ms(100)  # DISPON
+
+        self.fill(NAVY)
+        print(&quot;ST7735 ready  {}x{}&quot;.format(W, H))
+
+    def _window(self, x0, y0, x1, y1):
+        x0 += self._xoff; x1 += self._xoff
+        y0 += self._yoff; y1 += self._yoff
+        self._cmd(0x2A, [0x00, x0, 0x00, x1])
+        self._cmd(0x2B, [0x00, y0, 0x00, y1])
+        self._cmd(0x2C)
+
+    def _blit(self, data):
+        self._dc.on()
+        self._cs.off()
+        self._spi.write(data)
+        self._cs.on()
+
+    def fill(self, col):
+        self._window(0, 0, W-1, H-1)
+        hi = (col &gt;&gt; 8) &amp; 0xFF
+        lo = col &amp; 0xFF
+        chunk = bytes([hi, lo] * 64)
+        self._dc.on(); self._cs.off()
+        for _ in range(W * H // 64):
+            self._spi.write(chunk)
+        self._cs.on()
+
+    def rect(self, x, y, w, h, col):
+        if x &gt;= W or y &gt;= H or w &lt;= 0 or h &lt;= 0:
+            return
+        x1 = min(x+w-1, W-1)
+        y1 = min(y+h-1, H-1)
+        self._window(x, y, x1, y1)
+        hi = (col &gt;&gt; 8) &amp; 0xFF
+        lo = col &amp; 0xFF
+        n  = (x1-x+1) * (y1-y+1)
+        chunk = bytes([hi, lo] * min(64, n))
+        self._dc.on(); self._cs.off()
+        done = 0
+        while done &lt; n:
+            batch = min(64, n-done)
+            self._spi.write(bytes([hi, lo] * batch))
+            done += batch
+        self._cs.on()
+
+    def hline(self, x, y, w, col):
+        self.rect(x, y, w, 1, col)
+
+    def vline(self, x, y, h, col):
+        self.rect(x, y, 1, h, col)
+
+    def text(self, s, x, y, col, bg=NAVY, scale=1):
+        &quot;&quot;&quot;Draw text left-to-right using 8x8 framebuf font.&quot;&quot;&quot;
+        s = str(s)
+        if not s or x &gt;= W or y &gt;= H:
+            return
+        char_w = 8 * scale
+        char_h = 8 * scale
+
+        for ch in s:
+            if x + char_w &gt; W:
+                break
+            # Render 8x8 mono glyph
+            mono = bytearray(8)
+            fb = framebuf.FrameBuffer(mono, 8, 8, framebuf.MONO_VLSB)
+            fb.fill(0)
+            fb.text(ch, 0, 0, 1)
+
+            # Build RGB565 pixel buffer
+            buf = bytearray(char_w * char_h * 2)
+            hi_f = (col &gt;&gt; 8) &amp; 0xFF; lo_f = col &amp; 0xFF
+            hi_b = (bg  &gt;&gt; 8) &amp; 0xFF; lo_b = bg  &amp; 0xFF
+            idx = 0
+            for row in range(8):
+                for sr in range(scale):
+                    for bit in range(8):
+                        # MONO_VLSB stores LSB first per row
+                        on = (mono[row] &gt;&gt; bit) &amp; 1
+                        for sc in range(scale):
+                            buf[idx]   = hi_f if on else hi_b
+                            buf[idx+1] = lo_f if on else lo_b
+                            idx += 2
+
+            self._window(x, y, x+char_w-1, y+char_h-1)
+            self._blit(buf)
+            x += char_w
+
+
+# ════════════════════════════════════════════════════════════
+#  DRONE POD UI FUNCTIONS FOR ST7735 128x160
+# ════════════════════════════════════════════════════════════
+
+_tft = None
+
+def init_tft():
+    global _tft
+    try:
+        _tft = ST7735()
+        return True
+    except Exception as e:
+        print(&quot;ST7735 init failed: {}&quot;.format(e))
+        return False
+
+def tft_draw_base():
+    if _tft is None: return
+    _tft.fill(NAVY)
+    _tft.rect(0, 0, W, 18, CARD)
+    _tft.hline(0, 18, W, TEAL)
+    _tft.text(&quot;DRONE POD&quot;, 2, 4, TEAL, CARD)
+    _tft.hline(0, 40, W, DIM)
+    _tft.hline(0, 60, W, DIM)
+    _tft.hline(0, 80, W, DIM)
+    _tft.hline(0, 145, W, TEAL)
+    _tft.text(&quot;GPS&quot;, 2, 148, DIM, NAVY)
+
+def tft_status(state, sub=&quot;&quot;):
+    if _tft is None: return
+    cols = {
+        &quot;SCANNING&quot;:   GOLD,
+        &quot;CONNECTING&quot;: CYAN,
+        &quot;CONNECTED&quot;:  GREEN,
+        &quot;RECEIVING&quot;:  TEAL,
+        &quot;SAVING&quot;:     color(180,100,255),
+        &quot;RF WAKE&quot;:    ORANGE,
+        &quot;DONE&quot;:       GREEN,
+        &quot;ERROR&quot;:      RED,
+        &quot;MAPPING&quot;:    TEAL,
+    }
+    c = cols.get(state, WHITE)
+    _tft.rect(0, 21, W, 17, PANEL)
+    _tft.rect(0, 21, 3, 17, c)
+    _tft.text(state[:14], 6, 24, c, PANEL)
+
+def tft_mac(mac):
+    if _tft is None: return
+    _tft.rect(0, 42, W, 16, CARD)
+    _tft.text(mac[:16], 2, 43, WHITE, CARD)
+
+def tft_rows(n):
+    if _tft is None: return
+    _tft.rect(0, 62, 64, 16, NAVY)
+    _tft.text(&quot;R:{}&quot;.format(n), 2, 63, GREEN, NAVY)
+
+def tft_eof(n):
+    if _tft is None: return
+    _tft.rect(66, 62, 62, 16, NAVY)
+    _tft.text(&quot;E:{}/3&quot;.format(n), 68, 63,
+              GREEN if n &gt;= 3 else GOLD, NAVY)
+
+def tft_gps(lat, lon, fix):
+    if _tft is None: return
+    _tft.rect(0, 82, W, 30, NAVY)
+    if fix and lat is not None:
+        _tft.text(&quot;{:.5f}&quot;.format(lat), 2, 82, TEAL, NAVY)
+        _tft.text(&quot;{:.5f}&quot;.format(lon), 2, 96, TEAL, NAVY)
+    else:
+        _tft.text(&quot;GPS: no fix&quot;, 2, 82, DIM, NAVY)
+        _tft.text(&quot;Go outside&quot;, 2, 96, DIM, NAVY)
+
+def tft_waypoint(n, mac, lat, lon):
+    if _tft is None: return
+    _tft.fill(CARD)
+    _tft.rect(0, 0, W, 18, color(10,18,42))
+    _tft.hline(0, 18, W, GREEN)
+    _tft.text(&quot;WPT #{} SAVED&quot;.format(n), 2, 3, GREEN, color(10,18,42))
+    _tft.text(mac[:9],  2, 26, WHITE, CARD)
+    _tft.text(mac[9:],  2, 42, WHITE, CARD)
+    _tft.text(&quot;{:.5f}&quot;.format(lat), 2, 62, TEAL, CARD)
+    _tft.text(&quot;{:.5f}&quot;.format(lon), 2, 78, TEAL, CARD)
+
+def tft_footer(msg, col=None):
+    if _tft is None: return
+    if col is None: col = WHITE
+    _tft.rect(0, 146, W, 14, NAVY)
+    _tft.text(safe(msg)[:16], 2, 147, col, NAVY)
+
+def safe(s):
+    return &quot;&quot;.join(c for c in str(s) if 32 &lt;= ord(c) &lt;= 126)
+</pre>
+</div>
+
+<h3>11.6 — Display Orientation Test Utility</h3>
+<p>A diagnostic script written specifically to solve the display orientation problem encountered with the small screen. It automatically cycles through every possible screen orientation setting, displaying a labelled test pattern for each one, allowing the correct setting for this specific hardware batch to be identified visually and then hard-coded into the final driver.</p>
+<div class="code-block">
+  <div class="code-label"><span class="filename">test_orientation.py</span><span class="filemeta">129 lines</span></div>
+  <pre class="code">&quot;&quot;&quot;
+ST7735 ORIENTATION FINDER
+Cycles through all 8 MADCTL values showing the value on screen.
+Note which one shows text reading correctly left to right, top to bottom.
+&quot;&quot;&quot;
+import machine, time
+
+_SCK  = 2
+_MOSI = 3
+_CS   = 18
+_DC   = 16
+_RST  = 17
+
+spi = machine.SPI(0, baudrate=20_000_000, polarity=0, phase=0,
+                  sck=machine.Pin(_SCK), mosi=machine.Pin(_MOSI))
+cs  = machine.Pin(_CS,  machine.Pin.OUT)
+dc  = machine.Pin(_DC,  machine.Pin.OUT)
+rst = machine.Pin(_RST, machine.Pin.OUT)
+cs.on()
+
+def cmd(c, data=None):
+    dc.off(); cs.off()
+    spi.write(bytes([c]))
+    cs.on()
+    if data:
+        dc.on(); cs.off()
+        spi.write(bytes(data))
+        cs.on()
+
+def window(x0,y0,x1,y1):
+    cmd(0x2A,[0,x0,0,x1])
+    cmd(0x2B,[0,y0,0,y1])
+    cmd(0x2C)
+
+def fill(w, h, color):
+    window(0,0,w-1,h-1)
+    hi=(color&gt;&gt;8)&amp;0xFF; lo=color&amp;0xFF
+    chunk=bytes([hi,lo]*64)
+    dc.on(); cs.off()
+    for _ in range(w*h//64):
+        spi.write(chunk)
+    cs.on()
+
+def rect(x,y,w,h,color):
+    window(x,y,x+w-1,y+h-1)
+    hi=(color&gt;&gt;8)&amp;0xFF; lo=color&amp;0xFF
+    dc.on(); cs.off()
+    for _ in range(w*h):
+        spi.write(bytes([hi,lo]))
+    cs.on()
+
+import framebuf
+def text(s, x, y, col, bg, W):
+    for ch in s:
+        if x+8 &gt; W: break
+        buf=bytearray(8)
+        fb=framebuf.FrameBuffer(buf,8,8,framebuf.MONO_VLSB)
+        fb.fill(0); fb.text(ch,0,0,1)
+        pixels=bytearray(8*8*2)
+        hi_f=(col&gt;&gt;8)&amp;0xFF; lo_f=col&amp;0xFF
+        hi_b=(bg&gt;&gt;8)&amp;0xFF;  lo_b=bg&amp;0xFF
+        idx=0
+        for row in range(8):
+            for c in range(8):
+                bit=(buf[row]&gt;&gt;c)&amp;1
+                if bit: pixels[idx]=hi_f; pixels[idx+1]=lo_f
+                else:   pixels[idx]=hi_b; pixels[idx+1]=lo_b
+                idx+=2
+        window(x,y,x+7,y+7)
+        dc.on(); cs.off(); spi.write(pixels); cs.on()
+        x+=8
+
+# Hardware reset
+rst.off(); time.sleep_ms(100); rst.on(); time.sleep_ms(100)
+cmd(0x01); time.sleep_ms(150)  # SWRESET
+cmd(0x11); time.sleep_ms(500)  # SLPOUT
+cmd(0xB1,[0x01,0x2C,0x2D])
+cmd(0xB2,[0x01,0x2C,0x2D])
+cmd(0xB3,[0x01,0x2C,0x2D,0x01,0x2C,0x2D])
+cmd(0xB4,[0x07])
+cmd(0xC0,[0xA2,0x02,0x84])
+cmd(0xC1,[0xC5])
+cmd(0xC2,[0x0A,0x00])
+cmd(0xC3,[0x8A,0x2A])
+cmd(0xC4,[0x8A,0xEE])
+cmd(0xC5,[0x0E])
+cmd(0x20)
+cmd(0x3A,[0x05])
+cmd(0x13); time.sleep_ms(10)
+cmd(0x29); time.sleep_ms(100)
+
+# Test each MADCTL value
+# Each shows for 3 seconds — note which looks correct
+orientations = [
+    (0x00, &quot;0x00&quot;),
+    (0x08, &quot;0x08&quot;),
+    (0x60, &quot;0x60&quot;),
+    (0x68, &quot;0x68&quot;),
+    (0xA0, &quot;0xA0&quot;),
+    (0xA8, &quot;0xA8&quot;),
+    (0xC0, &quot;0xC0&quot;),
+    (0xC8, &quot;0xC8&quot;),
+]
+
+NAVY  = 0x040A
+WHITE = 0xFFFF
+TEAL  = 0x051E
+GOLD  = 0xFF80
+
+for madctl, label in orientations:
+    cmd(0x36, [madctl])
+    time.sleep_ms(50)
+
+    # Try both 128x160 and 160x128 fills
+    # Use 160x128 window to cover all cases
+    fill(162, 132, NAVY)
+
+    # Draw orientation label big and clear
+    text(&quot;VAL:&quot;+label, 2, 10, GOLD,  NAVY, 160)
+    text(&quot;DRONE POD&quot;,  2, 26, TEAL,  NAVY, 160)
+    text(&quot;TEST 1234&quot;,  2, 42, WHITE, NAVY, 160)
+    text(&quot;ABCDEFGHIJ&quot;, 2, 58, WHITE, NAVY, 160)
+    # Arrow showing expected reading direction
+    text(&quot;-&gt; READ -&gt;&quot;, 2, 74, TEAL,  NAVY, 160)
+
+    print(&quot;Showing MADCTL={} for 3 seconds...&quot;.format(label))
+    time.sleep_ms(3000)
+
+print(&quot;Done! Tell me which value showed correct text.&quot;)
+</pre>
+</div>
+
+</div>
+
+</div>
+
+<footer class="wrap">
+  <span>Drone Pod Project — Complete Technical Record</span>
+  <span>Raspberry Pi Pico W &nbsp;·&nbsp; MicroPython &nbsp;·&nbsp; BLE &nbsp;·&nbsp; GPS &nbsp;·&nbsp; RF &nbsp;·&nbsp; SD &nbsp;·&nbsp; DS3231 &nbsp;·&nbsp; ST7796 / ST7735</span>
+  <span>Compiled for research paper reference</span>
+</footer>
+
+</div>
+</body>
+</html>
