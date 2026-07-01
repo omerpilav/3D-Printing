@@ -2,7 +2,7 @@
 
 A complete technical record of designing and building a Raspberry Pi Pico W drone pod that locates, wakes, and collects data from distributed IoT sensor sticks in the field.
 
-**[View the full technical record →](https://omerpilav.github.io/3D-Printing/drone_project_full_record.html)**
+**[View the full technical record →]([https://omerpilav.github.io/3D-Printing/drone_project_full_record.html](https://omerpilav.github.io/3D-Printing/))**
 
 
 
